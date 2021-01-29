@@ -1,0 +1,4 @@
+#include "../src/scixtracer/SxLog.h"
+#include "../src/scixtracer/SxLogFile.h"
+#include "../src/scixtracer/SxLogTerminal.h"
+#include "../src/scixtracer/SxObject.h"
