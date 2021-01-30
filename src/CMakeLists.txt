@@ -20,14 +20,22 @@ SET(SRC_FILES
   SxLogFile.cpp
   SxLogTerminal.cpp
   SxObject.cpp
-
+  SxRequest.cpp
+  SxSerialize.cpp
+  SxServices.cpp
+  SxContainer.cpp
 )
 
 SET(HEADERS_FILES
+  SxException.h
   SxLog.h
   SxLogFile.h
   SxLogTerminal.h
   SxObject.h
+  SxRequest.h
+  SxSerialize.h
+  SxServices.h
+  SxContainer.h
 )
   
 ## #################################################################
