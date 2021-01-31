@@ -9,6 +9,8 @@
 #include <QString>
 #include "scixtracerExport.h"
 
+#include "SxMetadata.h"
+
 /// \class SxSerialize
 /// \brief Abstract class that define the metadata serilizer interface
 class SCIXTRACER_EXPORT SxSerialize{

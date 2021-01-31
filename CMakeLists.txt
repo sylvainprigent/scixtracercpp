@@ -57,7 +57,7 @@ option(sx_BUILD_TESTS "Build Tests" OFF)
 
 
 add_subdirectory( src )
-if(ssx_BUILD_TOOLS)
+if(sx_BUILD_TOOLS)
   add_subdirectory( tools )
 endif(sx_BUILD_TOOLS)
 if(sx_BUILD_TESTS)
