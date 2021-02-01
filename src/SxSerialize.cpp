@@ -21,6 +21,10 @@ SxSerialize::~SxSerialize()
 
 QString SxSerialize::serialize(SxMetadata* data)
 {
+    SxData* sdata = dynamic_cast<SxData*>(data);
+    if (sdata){
+        return this->serialize(sdata);
+    }
     SxRawData* rawData = dynamic_cast<SxRawData*>(data);
     if (rawData){
         return this->serialize(rawData);

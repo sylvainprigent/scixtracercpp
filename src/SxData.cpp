@@ -42,6 +42,11 @@ SxFormat SxData::get_format()
     return m_format;
 }
 
+QString SxData::get_url()
+{
+    return m_url;
+}
+
 void SxData::set_type(const QString& type)
 {
     m_type = type;
@@ -65,4 +70,9 @@ void SxData::set_date(const SxDate& date)
 void SxData::set_format(const SxFormat& format)
 {
     m_format = format;
+}
+
+void SxData::set_url(const QString& url)
+{
+    m_url = url;
 }

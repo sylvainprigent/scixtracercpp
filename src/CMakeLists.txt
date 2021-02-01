@@ -29,6 +29,7 @@ SET(SRC_FILES
   SxProcessedData.cpp
   SxRawData.cpp
   SxRequest.cpp
+  SxSerializeJson.cpp
   SxSerialize.cpp
   SxRun.cpp
   SxServices.cpp
@@ -53,6 +54,7 @@ SET(HEADERS_FILES
   SxRawData.h
   SxRequest.h
   SxRun.h
+  SxSerializeJson.h
   SxSerialize.h
   SxServices.h
   SxContainer.h
