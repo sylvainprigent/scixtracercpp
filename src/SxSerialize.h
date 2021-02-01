@@ -10,6 +10,8 @@
 #include "scixtracerExport.h"
 
 #include "SxMetadata.h"
+#include "SxRawData.h"
+#include "SxProcessedData.h"
 
 /// \class SxSerialize
 /// \brief Abstract class that define the metadata serilizer interface

@@ -18,7 +18,7 @@ class SCIXTRACER_EXPORT SxMetadata: public SxContainer{
 
 public:
     SxMetadata();
-    ~SxMetadata();
+    virtual ~SxMetadata();
 
 public:
     // methods

@@ -16,6 +16,7 @@ project(scixtracer)
 ## #################################################################
 
 SET(SRC_FILES  
+  SxData.cpp
   SxDate.cpp
   SxFormat.cpp
   SxLog.cpp
@@ -23,6 +24,8 @@ SET(SRC_FILES
   SxLogTerminal.cpp
   SxMetadata.cpp
   SxObject.cpp
+  SxProcessedData.cpp
+  SxRawData.cpp
   SxRequest.cpp
   SxSerialize.cpp
   SxServices.cpp
@@ -32,6 +35,7 @@ SET(SRC_FILES
 )
 
 SET(HEADERS_FILES
+  SxData.h
   SxDate.h
   SxFormat.h
   SxException.h
@@ -40,6 +44,8 @@ SET(HEADERS_FILES
   SxLogTerminal.h
   SxMetadata.h
   SxObject.h
+  SxProcessedData.h
+  SxRawData.h
   SxRequest.h
   SxSerialize.h
   SxServices.h

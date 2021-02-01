@@ -4,8 +4,10 @@
 /// \version 0.1
 /// \date 2021
 
-#include <SxSerialize.h>
-
+#include "SxSerialize.h"
+#include "SxException.h"
+#include "SxRawData.h"
+#include "SxProcessedData.h"
 
 SxSerialize::SxSerialize()
 {
@@ -27,4 +29,5 @@ QString SxSerialize::serialize(SxMetadata* data)
     if (processedData){
         return this->serialize(processedData);
     }
+    throw SxException("SxSerialize::serialize SxMetadata type not recognized");
 }
