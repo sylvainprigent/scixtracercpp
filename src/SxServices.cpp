@@ -7,6 +7,8 @@
 #include "SxServices.h"
 #include "SxException.h"
 
+#include <QFile>
+
 SxServices::SxServices()
 {
 
@@ -14,21 +16,21 @@ SxServices::SxServices()
 
 SxServices::~SxServices()
 {
-    if (m_serializer){
-        delete m_serializer;
+    if (m_settings){
+        delete m_settings;
     }
     if (m_request){
         delete m_request;
     }
 }
 
-SxSerialize* SxServices::serializer()
+SxSettings* SxServices::settings()
 {
-    if (m_serializer){
-        return m_serializer;
+    if (m_settings){
+        return m_settings;
     }
     else{
-        throw SxException("SxServices: serializer not initilized. Please use 'set_serializer(name) method'");
+        throw SxException("SxServices: settings not initilized. Please use the 'set_settings_file(filename) method'");
     }
 }
 
@@ -38,17 +40,17 @@ SxRequest* SxServices::request()
         return m_request;
     }
     else{
-        throw SxException("SxServices: request engine not initilized. Please use 'set_request_engine(name) method'");
+        throw SxException("SxServices: request engine not initilized. Please use the 'set_request_engine(name) method'");
     }
 }
 
-void SxServices::set_serializer(QString serializer_name)
+void SxServices::set_settings_file(QString filename)
 {
-    if (serializer_name == "json"){
-        //m_serializer = new SxSerializerJson();
+    if (QFile::exists(filename)){
+        m_settings = new SxSettings(filename);
     }
     else{
-        throw SxException(("Cannot find the serializer " + serializer_name.toStdString()).c_str());
+        throw SxException(("Cannot find the settings file " + filename.toStdString()).c_str());
     }
 }
 

@@ -9,7 +9,7 @@
 #include <QString>
 #include "scixtracerExport.h"
 
-#include "SxSerialize.h"
+#include "SxSettings.h"
 #include "SxRequest.h"
 
 /// \class SxServices
@@ -17,7 +17,7 @@
 class SCIXTRACER_EXPORT SxServices{
 
 private:
-    static SxSerialize *m_serializer; ///< Unique instance of the serializer service
+    static SxSettings *m_settings; ///< Unique instance of the settings service
     static SxRequest *m_request; ///< Unique instance of the serializer service
 
 public:
@@ -27,10 +27,10 @@ public:
     ~SxServices();
 
 public:
-    static SxSerialize* serializer();
+    static SxSettings* settings();
     static SxRequest* request();
 
 private:
-    void set_serializer(QString serializer_name);
+    void set_settings_file(QString filename);
     void set_request_engine(QString engine_name);
 };

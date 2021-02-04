@@ -34,6 +34,9 @@ public:
     /// \param[in] Index of the data in the dataset
     /// \return URI of the data at index
     QString get_data_uri(qint8 index);
+    /// \brief Get the URIs list of the data the dataset
+    /// \return URIs list of the data the dataset
+    QStringList get_data_list();
 
 public:
     // setters

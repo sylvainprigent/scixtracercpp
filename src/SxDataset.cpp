@@ -62,3 +62,14 @@ void SxDataset::set_data(const QString& uri)
 {
     m_data_uris.insert(uri);
 }
+
+QStringList SxDataset::get_data_list()
+{
+    QStringList uris;
+    QSetIterator<QString> i(m_data_uris);
+    while (i.hasNext())
+    {
+        uris.append(i.next());
+    }
+    return uris;
+}
