@@ -16,6 +16,7 @@ class SCIXTRACER_EXPORT SxUser: public SxContainer{
 
 public:
     SxUser();
+    SxUser(const QString& username);
     ~SxUser();
 
 public:

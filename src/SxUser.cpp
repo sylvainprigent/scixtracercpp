@@ -12,6 +12,10 @@ SxUser::SxUser() : SxContainer()
 
 }
 
+SxUser::SxUser(const QString& username) : SxContainer(){
+    m_username = username;
+}
+
 SxUser::~SxUser()
 {
 

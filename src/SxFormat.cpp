@@ -11,11 +11,15 @@ SxFormat::SxFormat() : SxContainer()
 
 }
 
+SxFormat::SxFormat(const QString& name) : SxContainer()
+{
+    m_name = name;
+}
+
 SxFormat::~SxFormat()
 {
 
 }
-
 
 QString SxFormat::get_name()
 {

@@ -16,6 +16,7 @@ class SCIXTRACER_EXPORT SxFormat: public SxContainer{
 
 public:
     SxFormat();
+    SxFormat(const QString& name);
     ~SxFormat();
 
 public:

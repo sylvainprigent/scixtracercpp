@@ -14,6 +14,11 @@ SxDate::SxDate() : SxContainer()
 
 }
 
+SxDate::SxDate(const QString& date) : SxContainer()
+{
+    this->set_from_string(date);
+}
+
 SxDate::~SxDate()
 {
 

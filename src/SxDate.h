@@ -16,6 +16,7 @@ class SCIXTRACER_EXPORT SxDate: public SxContainer{
 
 public:
     SxDate();
+    SxDate(const QString& date);
     ~SxDate();
 
 public:
