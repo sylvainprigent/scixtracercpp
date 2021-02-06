@@ -38,9 +38,9 @@ public:
     /// \brief Get the data format
     /// \return Data format
     SxFormat get_format();
-    /// \brief Get the URL of the data file
-    /// \return URL of the data file
-    QString get_url();
+    /// \brief Get the URI of the data file
+    /// \return URI of the data file
+    QString get_uri();
 
 public:
     // setters
@@ -59,9 +59,9 @@ public:
     /// \brief Set the data format
     /// \param[in] format Data format
     void set_format(const SxFormat& format);
-    /// \brief Set the data file URL
-    /// \param[in] url URL of the data file
-    void set_url(const QString& url);
+    /// \brief Set the data file URI
+    /// \param[in] uri URI of the data file
+    void set_uri(const QString& uri);
 
 private:
     QString m_type;
@@ -69,5 +69,5 @@ private:
     SxUser m_author;
     SxDate m_date;
     SxFormat m_format;
-    QString m_url;
+    QString m_uri;
 };

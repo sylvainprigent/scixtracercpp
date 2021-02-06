@@ -16,13 +16,13 @@ SxMetadata::~SxMetadata()
 
 }
 
-QString SxMetadata::get_uri(){
-    return m_uri;
+QString SxMetadata::get_md_uri(){
+    return m_md_uri;
 }
 
 void SxMetadata::add_child(SxMetadata* container)
 {
-    m_children[container->get_uri()] = container;
+    m_children[container->get_md_uri()] = container;
 }
 
 SxMetadata* SxMetadata::get_child(QString uri)
@@ -49,7 +49,7 @@ qint8 SxMetadata::get_children_count()
     return m_children.count();
 }
 
-void SxMetadata::set_uri(const QString& uri)
+void SxMetadata::set_md_uri(const QString& md_uri)
 {
-    m_uri = uri;
+    m_md_uri = md_uri;
 }

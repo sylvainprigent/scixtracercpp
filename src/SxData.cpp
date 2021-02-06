@@ -42,9 +42,9 @@ SxFormat SxData::get_format()
     return m_format;
 }
 
-QString SxData::get_url()
+QString SxData::get_uri()
 {
-    return m_url;
+    return m_uri;
 }
 
 void SxData::set_type(const QString& type)
@@ -72,7 +72,7 @@ void SxData::set_format(const SxFormat& format)
     m_format = format;
 }
 
-void SxData::set_url(const QString& url)
+void SxData::set_uri(const QString& uri)
 {
-    m_url = url;
+    m_uri = uri;
 }

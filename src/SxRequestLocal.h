@@ -57,11 +57,13 @@ public:
     /// \brief Add a run to a processed dataset
     /// \param[in] run Container of the Run metadata
     /// \param[in] dataset_md_uri URI of the ProcessedDataset
-    void add_run_processeddataset(SxRun* run, const QString& dataset_md_uri);
+    /// \return URI of the run metadata info
+    QString add_run_processeddataset(SxRun* run, const QString& dataset_md_uri);
     /// \brief Create a new processed dataset
     /// \param[in] name Name of the processed dataset
     /// \param[in] experiment_md_uri URI of the experiment that contains the dataset
-    void create_processed_dataset(const QString& name, const QString& experiment_md_uri);
+    /// \return Reference to the newly created dataset
+    SxDataset *create_processed_dataset(const QString& name, const QString& experiment_md_uri);
     /// \brief Create a new data metadata in the dataset
     ///  The input data object must contain only the metadata (ie no uri and no md_uri).
     ///  This method generate the uri and the md_uri and save all the metadata
@@ -118,6 +120,11 @@ private:
     void write_json(QJsonObject object, const QString& filename);
 
 private:
+    /// \brief Join two path, and add separator if necessary
+    /// \param[in] path1 Start string of the path
+    /// \param[in] path2 End string of the path
+    /// \return the join path
+    static QString path_join(QString path1, QString path2);
     /// \brief get metadata file directory path
     /// \param[in] md_uri md file uri
     /// \return The name of the metadata file directory path

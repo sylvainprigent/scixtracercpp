@@ -61,11 +61,13 @@ public:
     /// \brief Add a run to a processed dataset
     /// \param[in] run Container of the Run metadata
     /// \param[in] dataset_md_uri URI of the ProcessedDataset
-    virtual void add_run_processeddataset(SxRun* run, const QString& dataset_md_uri) = 0;
+    /// \return URI of the run metadata info
+    virtual QString add_run_processeddataset(SxRun* run, const QString& dataset_md_uri) = 0;
     /// \brief Create a new processed dataset
     /// \param[in] name Name of the processed dataset
     /// \param[in] experiment_md_uri URI of the experiment that contains the dataset
-    virtual void create_processed_dataset(const QString& name, const QString& experiment_md_uri) = 0;
+    /// \return Reference to the newly created dataset
+    virtual SxDataset *create_processed_dataset(const QString& name, const QString& experiment_md_uri) = 0;
     /// \brief Create a new data metadata in the dataset
     ///  The input data object must contain only the metadata (ie no uri and no md_uri).
     ///  This method generate the uri and the md_uri and save all the metadata

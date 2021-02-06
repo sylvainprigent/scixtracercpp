@@ -30,7 +30,7 @@ public:
     // getters
     /// \brief Get the metadata URI
     /// \return URI of the metadata
-    QString get_uri();
+    QString get_md_uri();
     /// \brief Get a child from it URI
     /// \param[in] uri URI of the child metadata
     /// \return Reference to the child container, or null reference if not exists
@@ -46,10 +46,10 @@ public:
 public:
     // setters
     /// \brief Set the container URI
-    /// \param[in] uri URI of the metadata
-    void set_uri(const QString& uri);
+    /// \param[in] md_uri URI of the metadata
+    void set_md_uri(const QString& md_uri);
 
 private:
-    QString m_uri;
+    QString m_md_uri;
     QMap<QString, SxMetadata*> m_children;
 };
