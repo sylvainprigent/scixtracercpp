@@ -6,6 +6,8 @@
 
 #include "SxServices.h"
 #include "SxException.h"
+#include "SxSerializeJson.h"
+#include "SxRequestLocal.h"
 
 #include <QFile>
 
@@ -21,6 +23,19 @@ SxServices::~SxServices()
     }
     if (m_request){
         delete m_request;
+    }
+    if (m_serialize){
+        delete m_serialize;
+    }
+}
+
+SxSerialize* SxServices::serializer()
+{
+    if (m_serialize){
+        return m_serialize;
+    }
+    else{
+        throw SxException("SxServices: serialize engine not initilized. Please use the 'set_serialize_engine(format_name) method'");
     }
 }
 
@@ -44,6 +59,18 @@ SxRequest* SxServices::request()
     }
 }
 
+void SxServices::set_serialize_engine(QString format_name)
+{
+    if (format_name == "json")
+    {
+        m_serialize = new SxSerializeJson();
+    }
+    else
+    {
+        throw SxException(("Cannot find the serializer for the format " + format_name.toStdString()).c_str());
+    }
+}
+
 void SxServices::set_settings_file(QString filename)
 {
     if (QFile::exists(filename)){
@@ -57,7 +84,7 @@ void SxServices::set_settings_file(QString filename)
 void SxServices::set_request_engine(QString engine_name)
 {
     if (engine_name == "local"){
-       // m_request = new SxRequestLocal();
+       m_request = new SxRequestLocal();
     }
     else{
         throw SxException(("Cannot find the request engine " + engine_name.toStdString()).c_str());

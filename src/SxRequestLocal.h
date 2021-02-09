@@ -13,7 +13,7 @@
 
 /// \class SxRequestLocal
 /// \brief Implementation if SxRequest for a local file systeme
-class SCIXTRACER_EXPORT SxRequestLocal{
+class SCIXTRACER_EXPORT SxRequestLocal : public SxRequest{
 
 public:
     /// \brief Constructor
