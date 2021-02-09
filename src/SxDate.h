@@ -14,6 +14,8 @@
 /// \brief Container for a date. It manage only year, month and day. Not minutes and hours
 class SCIXTRACER_EXPORT SxDate: public SxContainer{
 
+    Q_OBJECT
+
 public:
     SxDate();
     SxDate(const QString& date);

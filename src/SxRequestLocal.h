@@ -87,7 +87,8 @@ public:
     /// \param[in] rawdataset_uri URI of the raw dataset where the data will be imported
     /// \param[in] metadata Metadata of the data to import
     /// \param[in] copy True if the data is copied to the Experiment database, false otherwise
-    void import_data(const QString& data_path, const QString& rawdataset_uri, SxRawData* metadata, bool copy);
+    /// \return the URI of the imported data
+    QString import_data(const QString& data_path, const QString& rawdataset_uri, SxRawData* metadata, bool copy);
     /// \brief Read a run metadata from the data base
     /// \param[in] md_uri URI of the run entry in the database
     /// \return Object containing the run metadata

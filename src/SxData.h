@@ -17,9 +17,11 @@
 /// \brief Metadata container for any data base information
 class SCIXTRACER_EXPORT SxData: public SxMetadata{
 
+    Q_OBJECT
+
 public:
     SxData();
-    ~SxData();
+    virtual ~SxData();
 
 public:
     // getters
@@ -31,13 +33,13 @@ public:
     QString get_name();
     /// \brief Get the the data author
     /// \return Reference to the user information
-    SxUser get_author();
+    SxUser* get_author();
     /// \brief Get the creation date of the data
     /// \return Creation date of the data
-    SxDate get_date();
+    SxDate* get_date();
     /// \brief Get the data format
     /// \return Data format
-    SxFormat get_format();
+    SxFormat* get_format();
     /// \brief Get the URI of the data file
     /// \return URI of the data file
     QString get_uri();
@@ -52,13 +54,13 @@ public:
     void set_name(const QString& name);
     /// \brief Set the username of the data author
     /// \param[in] username Username of the data author
-    void set_author(const SxUser& user);
+    void set_author(SxUser* user);
     /// \brief Set the creation date of the data
     /// \param[in] date Creation date of the data
-    void set_date(const SxDate& date);
+    void set_date(SxDate* date);
     /// \brief Set the data format
     /// \param[in] format Data format
-    void set_format(const SxFormat& format);
+    void set_format(SxFormat* format);
     /// \brief Set the data file URI
     /// \param[in] uri URI of the data file
     void set_uri(const QString& uri);
@@ -66,8 +68,8 @@ public:
 private:
     QString m_type;
     QString m_name;
-    SxUser m_author;
-    SxDate m_date;
-    SxFormat m_format;
+    SxUser* m_author;
+    SxDate* m_date;
+    SxFormat* m_format;
     QString m_uri;
 };

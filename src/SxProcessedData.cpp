@@ -13,6 +13,13 @@ SxProcessedDataInput::SxProcessedDataInput() : SxContainer()
 
 }
 
+SxProcessedDataInput::SxProcessedDataInput(const QString& name, const QString& uri, const QString& type) : SxContainer()
+{
+    m_name = name;
+    m_uri = uri;
+    m_type = type;
+}
+
 SxProcessedDataInput::~SxProcessedDataInput()
 {
 
@@ -52,6 +59,12 @@ void SxProcessedDataInput::set_type(const QString& type)
 SxProcessedDataOutput::SxProcessedDataOutput() : SxContainer()
 {
 
+}
+
+SxProcessedDataOutput::SxProcessedDataOutput(const QString& name, const QString& label) : SxContainer()
+{
+    m_name = name;
+    m_label = label;
 }
 
 SxProcessedDataOutput::~SxProcessedDataOutput()
@@ -94,7 +107,7 @@ QString SxProcessedData::get_run_uri()
 {
     return m_run_uri;
 }
-SxProcessedDataOutput SxProcessedData::get_run_output()
+SxProcessedDataOutput* SxProcessedData::get_run_output()
 {
     return m_output;
 }
@@ -102,9 +115,9 @@ qint8 SxProcessedData::get_run_inputs_count()
 {
     return m_inputs.count();
 }
-SxProcessedDataInput SxProcessedData::get_run_input(qint8 index)
+SxProcessedDataInput* SxProcessedData::get_run_input(qint8 index)
 {
-    QMapIterator<QString, SxProcessedDataInput> i(m_inputs);
+    QMapIterator<QString, SxProcessedDataInput*> i(m_inputs);
     qint8 j = -1;
     while (i.hasNext()) {
         i.next();
@@ -121,12 +134,12 @@ void SxProcessedData::set_run_uri(const QString& uri)
     m_run_uri = uri;
 }
 
-void SxProcessedData::set_run_input(const QString& name, const SxProcessedDataInput& input)
+void SxProcessedData::set_run_input(const QString& name, SxProcessedDataInput *input)
 {
     m_inputs[name] = input;
 }
 
-void SxProcessedData::set_run_output(const SxProcessedDataOutput& output)
+void SxProcessedData::set_run_output(SxProcessedDataOutput* output)
 {
     m_output = output;
 }

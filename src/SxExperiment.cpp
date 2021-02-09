@@ -22,12 +22,12 @@ QString SxExperiment::get_name()
     return m_name;
 }
 
-SxUser SxExperiment::get_author()
+SxUser* SxExperiment::get_author()
 {
     return m_author;
 }
 
-SxDate SxExperiment::get_date()
+SxDate* SxExperiment::get_date()
 {
     return m_date;
 }
@@ -72,12 +72,12 @@ void SxExperiment::set_name(const QString& name)
     m_name = name;
 }
 
-void SxExperiment::set_author(const SxUser& user)
+void SxExperiment::set_author(SxUser *user)
 {
     m_author = user;
 }
 
-void SxExperiment::set_date(const SxDate& date)
+void SxExperiment::set_date(SxDate *date)
 {
     m_date = date;
 }

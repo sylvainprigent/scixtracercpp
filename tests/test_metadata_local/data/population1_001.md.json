@@ -1,0 +1,12 @@
+{
+    "common": {
+        "author": "Sylvain Prigent",
+        "date": "-029-03-17",
+        "format": "tif",
+        "name": "population1_001.tif",
+        "url": "../../../../../../../uments/code/scixtracer/scixtracercpp/tests/test_metadata_local/data/population1_001.tif"
+    },
+    "origin": {
+        "type": "raw"
+    }
+}

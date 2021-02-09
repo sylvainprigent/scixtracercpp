@@ -16,6 +16,8 @@
 /// \brief Metadata container for an Experiment
 class SCIXTRACER_EXPORT SxExperiment: public SxMetadata{
 
+    Q_OBJECT
+
 public:
     SxExperiment();
     ~SxExperiment();
@@ -27,10 +29,10 @@ public:
     QString get_name();
     /// \brief Get the author of the Experiment
     /// \return Reference to the Experiment author
-    SxUser get_author();
+    SxUser* get_author();
     /// \brief Get the date of the Experiment
     /// \return Date of the Experiment
-    SxDate get_date();
+    SxDate* get_date();
     /// \brief Get the URI of the raw dataset
     /// \return URI of the raw dataset
     QString get_raw_dataset();
@@ -62,10 +64,10 @@ public:
     void set_name(const QString& name);
     /// \brief Set the author of the Experiment
     /// \param[in] user Reference to the Experiment author
-    void set_author(const SxUser& user);
+    void set_author(SxUser* user);
     /// \brief Set the date of the Experiment
     /// \param[in] date Date of the Experiment
-    void set_date(const SxDate& date);
+    void set_date(SxDate* date);
     /// \brief Set the URI of the raw dataset
     /// \param[in] uri URI of the raw dataset
     void set_raw_dataset(const QString& uri);
@@ -78,8 +80,8 @@ public:
 
 private:
     QString m_name;
-    SxUser m_author;
-    SxDate m_date;
+    SxUser* m_author;
+    SxDate* m_date;
     QString m_raw_dataset_uri;
     QStringList m_processed_datasets_uris;
     QStringList m_tags_keys;

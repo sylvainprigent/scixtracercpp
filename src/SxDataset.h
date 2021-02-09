@@ -15,6 +15,8 @@
 /// \brief Metadata container for a dataset
 class SCIXTRACER_EXPORT SxDataset: public SxMetadata{
 
+    Q_OBJECT
+
 public:
     SxDataset();
     ~SxDataset();

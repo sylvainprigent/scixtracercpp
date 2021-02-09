@@ -7,83 +7,97 @@
 #include "SxRun.h"
 
 
-SRunInput::SRunInput() : SxContainer()
+SxRunInput::SxRunInput() : SxContainer()
 {
 
 }
 
-SRunInput::~SRunInput()
+SxRunInput::SxRunInput(const QString& name, const QString& uri, const QString& query, const QString& origin) : SxContainer()
+{
+    m_name = name;
+    m_dataset_uri = uri;
+    m_query = query;
+    m_origin = origin;
+}
+
+SxRunInput::~SxRunInput()
 {
 
 }
 
-QString SRunInput::get_name()
+QString SxRunInput::get_name()
 {
     return m_name;
 }
 
-QString SRunInput::get_dataset()
+QString SxRunInput::get_dataset()
 {
     return m_dataset_uri;
 }
 
-QString SRunInput::get_query()
+QString SxRunInput::get_query()
 {
     return m_query;
 }
 
-QString SRunInput::get_origin_output_name()
+QString SxRunInput::get_origin_output_name()
 {
     return m_origin;
 }
 
-void SRunInput::set_name(const QString& name)
+void SxRunInput::set_name(const QString& name)
 {
     m_name = name;
 }
 
-void SRunInput::set_dataset(const QString& uri)
+void SxRunInput::set_dataset(const QString& uri)
 {
     m_dataset_uri = uri;
 }
 
-void SRunInput::set_query(const QString& query)
+void SxRunInput::set_query(const QString& query)
 {
     m_query = query;
 }
 
-void SRunInput::set_origin_output_name(const QString& name)
+void SxRunInput::set_origin_output_name(const QString& name)
 {
     m_origin = name;
 }
 
 
 
-SRunParameter::SRunParameter() : SxContainer()
+SxRunParameter::SxRunParameter() : SxContainer()
 {
 
 }
 
-SRunParameter::~SRunParameter()
+SxRunParameter::SxRunParameter(const QString& name, const QString& value) : SxContainer()
+{
+    m_name = name;
+    m_value = value;
+}
+
+SxRunParameter::~SxRunParameter()
 {
 
 }
 
-QString SRunParameter::get_name()
+QString SxRunParameter::get_name()
 {
     return m_name;
 }
 
-QString SRunParameter::get_value()
+QString SxRunParameter::get_value()
 {
     return m_value;
 }
 
-void SRunParameter::set_name(const QString& name)
+void SxRunParameter::set_name(const QString& name)
 {
     m_name = name;
 }
-void SRunParameter::set_value(const QString& value)
+void SxRunParameter::set_value(const QString& value)
 {
     m_value = value;
 }
@@ -119,12 +133,12 @@ qint8 SxRun::get_inputs_count()
     return m_inputs.count();
 }
 
-SRunInput SxRun::get_input(qint8 index)
+SxRunInput* SxRun::get_input(qint8 index)
 {
     return m_inputs[index];
 }
 
-QList<SRunInput> SxRun::get_inputs()
+QList<SxRunInput*> SxRun::get_inputs()
 {
     return m_inputs;
 }
@@ -134,12 +148,12 @@ qint8 SxRun::get_parameters_count()
     return m_parameters.count();
 }
 
-SRunParameter SxRun::get_parameter(qint8 index)
+SxRunParameter *SxRun::get_parameter(qint8 index)
 {
     return m_parameters[index];
 }
 
-QList<SRunParameter> SxRun::get_parameters()
+QList<SxRunParameter*> SxRun::get_parameters()
 {
     return m_parameters;
 }
@@ -160,11 +174,11 @@ void SxRun::set_process_uri(const QString& uri)
     m_process_uri = uri;
 }
 
-void SxRun::set_input(SRunInput& input)
+void SxRun::set_input(SxRunInput *input)
 {
     bool found = false;
     for (qint8 i = 0 ; i < m_inputs.count() ; i++){
-        if (m_inputs[i].get_name() == input.get_name()){
+        if (m_inputs[i]->get_name() == input->get_name()){
             m_inputs[i] = input;
             found = true;
         }
@@ -175,11 +189,11 @@ void SxRun::set_input(SRunInput& input)
     }
 }
 
-void SxRun::set_parameter(SRunParameter &parameter)
+void SxRun::set_parameter(SxRunParameter* parameter)
 {
     bool found = false;
     for (qint8 i = 0 ; i < m_parameters.count() ; i++){
-        if (m_parameters[i].get_name() == parameter.get_name()){
+        if (m_parameters[i]->get_name() == parameter->get_name()){
             m_parameters[i] = parameter;
             found = true;
         }

@@ -14,6 +14,8 @@
 /// \brief Container for the descriptions of a data format
 class SCIXTRACER_EXPORT SxFormat: public SxContainer{
 
+    Q_OBJECT
+
 public:
     SxFormat();
     SxFormat(const QString& name);

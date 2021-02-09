@@ -69,7 +69,8 @@ void SxDate::set_day(qint8 value)
 
 void SxDate::set_from_string(QString value)
 {
-    QStringList date_fr = value.split("/");
+    QString v1 = value;
+    QStringList date_fr = v1.split("/");
     if (date_fr.count() == 3){
         m_day = date_fr[0].toInt();
         m_month = date_fr[1].toInt();
@@ -77,11 +78,12 @@ void SxDate::set_from_string(QString value)
         return;
     }
 
-    QStringList date_en = value.split("-");
+    QString v2 = value;
+    QStringList date_en = v2.split("-");
     if (date_en.count() == 3){
-        m_day = date_fr[2].toInt();
-        m_month = date_fr[1].toInt();
-        m_year = date_fr[0].toInt();
+        m_day = date_en[2].toInt();
+        m_month = date_en[1].toInt();
+        m_year = date_en[0].toInt();
         return;
     }
 

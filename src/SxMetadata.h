@@ -16,6 +16,8 @@
 /// \brief Abstract parent class to all metadata containers
 class SCIXTRACER_EXPORT SxMetadata: public SxContainer{
 
+    Q_OBJECT
+
 public:
     SxMetadata();
     virtual ~SxMetadata();

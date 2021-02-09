@@ -6,12 +6,15 @@
 
 #pragma once
 
+#include <QObject>
 #include <QString>
 #include "scixtracerExport.h"
 
 /// \class SxObject
 /// \brief Mother class for each class of the API
-class SCIXTRACER_EXPORT SxObject{
+class SCIXTRACER_EXPORT SxObject : public QObject{
+
+    Q_OBJECT
 
 public:
     SxObject();

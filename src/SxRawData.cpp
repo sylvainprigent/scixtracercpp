@@ -6,6 +6,8 @@
 
 #include "SxRawData.h"
 
+#include <QJsonObject>
+
 SxRawData::SxRawData() : SxData()
 {
 

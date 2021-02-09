@@ -31,6 +31,8 @@ SET(SRC_FILES
   SxRequest.cpp
   SxRequestLocal.cpp
   SxRun.cpp
+  SxSerialize.cpp
+  SxSerializeJson.cpp
   SxServices.cpp
   SxSettings.cpp
   SxContainer.cpp
@@ -55,6 +57,8 @@ SET(HEADERS_FILES
   SxRequest.h
   SxRequestLocal.h
   SxRun.h
+  SxSerialize.h
+  SxSerializeJson.h
   SxServices.h
   SxSettings.h
   SxContainer.h

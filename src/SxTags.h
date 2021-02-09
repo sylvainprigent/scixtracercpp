@@ -15,6 +15,8 @@
 /// \brief Container for a map of tags associated to a RawData. Tags are represented as key=value
 class SCIXTRACER_EXPORT SxTags: public SxContainer{
 
+    Q_OBJECT
+
 public:
     SxTags();
     ~SxTags();

@@ -15,6 +15,8 @@
 /// \brief Metadata container for a raw data
 class SCIXTRACER_EXPORT SxRawData: public SxData{
 
+    Q_OBJECT
+
 public:
     SxRawData();
     ~SxRawData();

@@ -6,12 +6,14 @@
 
 #include "SxRequestLocal.h"
 #include "SxException.h"
+#include "SxDataset.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QRegularExpression>
 
 
 SxRequestLocal::SxRequestLocal()
@@ -53,14 +55,15 @@ SxRawData* SxRequestLocal::read_rawdata(const QString& md_uri)
     QString _md_uri = file_info.absoluteFilePath();
     if (QFile::exists(_md_uri) && _md_uri.endsWith(".md.json"))
     {
+        qDebug() << "parse the json file";
         QJsonObject metadata = this->read_json(_md_uri);
         SxRawData* container = new  SxRawData();
         QJsonObject common = metadata["common"].toObject();
         container->set_type(common["type"].toString());
         container->set_name(common["name"].toString());
-        container->set_author(SxUser(common["author"].toString()));
-        container->set_date(SxDate(common["date"].toString()));
-        container->set_format(SxFormat(common["format"].toString()));
+        container->set_author(new SxUser(common["author"].toString()));
+        container->set_date(new SxDate(common["date"].toString()));
+        container->set_format(new SxFormat(common["format"].toString()));
         // copy the url if absolute, append md_uri path otherwise
         container->set_uri(this->absolute_path(this->normalize_path_sep(common["url"].toString()), _md_uri));
         if (metadata.keys().contains("tags"))
@@ -92,9 +95,9 @@ void SxRequestLocal::write_rawdata(SxRawData* container, const QString& md_uri)
 
     QJsonObject common;
     common["name"] = container->get_name();
-    common["author"] = container->get_author().get_username();
-    common["date"] = container->get_date().get_to_string("YYYY-MM-DD");
-    common["format"] = container->get_format().get_name();
+    common["author"] = container->get_author()->get_username();
+    common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
+    common["format"] = container->get_format()->get_name();
     common["url"] = this->to_unix_path(this->relative_path(container->get_uri(), _md_uri));
     metadata["common"] = common;
 
@@ -119,9 +122,9 @@ SxProcessedData* SxRequestLocal::read_processeddata(const QString& md_uri)
         SxProcessedData* container = new SxProcessedData();
         QJsonObject common = metadata["common"].toObject();
         container->set_name(common["name"].toString());
-        container->set_author(SxUser(common["author"].toString()));
-        container->set_date(SxDate(common["date"].toString()));
-        container->set_format(SxFormat(common["format"].toString()));
+        container->set_author(new SxUser(common["author"].toString()));
+        container->set_date(new SxDate(common["date"].toString()));
+        container->set_format(new SxFormat(common["format"].toString()));
         container->set_uri(this->absolute_path(this->normalize_path_sep(common["url"].toString()), _md_uri));
         // origin run
         QJsonObject origin = metadata["origin"].toObject();
@@ -131,19 +134,19 @@ SxProcessedData* SxRequestLocal::read_processeddata(const QString& md_uri)
         for (qint8 i = 0 ; i < inputs_.count() ; ++i)
         {
             QJsonObject input = inputs_[i].toObject();
-            SxProcessedDataInput input_data;
-            input_data.set_name(input["name"].toString());
-            input_data.set_uri(absolute_path(normalize_path_sep(input["name"].toString()), _md_uri));
-            input_data.set_type(input["type"].toString());
+            SxProcessedDataInput* input_data = new SxProcessedDataInput();
+            input_data->set_name(input["name"].toString());
+            input_data->set_uri(absolute_path(normalize_path_sep(input["name"].toString()), _md_uri));
+            input_data->set_type(input["type"].toString());
             container->set_run_input(input["name"].toString(), input_data);
         }
         // origin
         QJsonObject output = origin["output"].toObject();
         if (output.contains("name") && output.contains("label"))
         {
-            SxProcessedDataOutput poutput;
-            poutput.set_name(output["name"].toString());
-            poutput.set_label(output["label"].toString());
+            SxProcessedDataOutput* poutput = new SxProcessedDataOutput();
+            poutput->set_name(output["name"].toString());
+            poutput->set_label(output["label"].toString());
             container->set_run_output(poutput);
         }
         container->set_md_uri(_md_uri);
@@ -160,9 +163,9 @@ void SxRequestLocal::write_processeddata(SxProcessedData* container, const QStri
      // common
     QJsonObject common;
     common["name"] = container->get_name();
-    common["author"] = container->get_author().get_username();
-    common["date"] = container->get_date().get_to_string("YYYY-MM-DD");
-    common["format"] = container->get_format().get_name();
+    common["author"] = container->get_author()->get_username();
+    common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
+    common["format"] = container->get_format()->get_name();
     common["url"] = this->to_unix_path(this->relative_path(container->get_uri(), _md_uri));
     metadata["common"] = common;
     // origin type
@@ -174,17 +177,20 @@ void SxRequestLocal::write_processeddata(SxProcessedData* container, const QStri
     QJsonArray inputs_json;
     for (qint8 i = 0 ; i < container->get_run_inputs_count() ; ++i)
     {
-        SxProcessedDataInput input_data = container->get_run_input(i);
+        SxProcessedDataInput* input_data = container->get_run_input(i);
         QJsonObject input_json;
-        input_json["name"] = input_data.get_name();
-        input_json["url"] = input_data.get_uri();
-        input_json["type"] = input_data.get_type();
+        input_json["name"] = input_data->get_name();
+        input_json["url"] = input_data->get_uri();
+        input_json["type"] = input_data->get_type();
         inputs_json.append(input_json);
     }
+    origin["inputs"] = inputs_json;
     // origin ouput
     QJsonObject output_json;
-    output_json["name"] = container->get_run_output().get_name();
-    output_json["label"] = container->get_run_output().get_label();
+    output_json["name"] = container->get_run_output()->get_name();
+    output_json["label"] = container->get_run_output()->get_label();
+    origin["output"] = inputs_json;
+    metadata["origin"] = origin;
 
     this->write_json(metadata, _md_uri);
 }
@@ -319,7 +325,7 @@ void SxRequestLocal::create_data_processeddataset(SxProcessedData* container, co
 
     // create the data metadata
     QString data_md_file = this->path_join(dataset_dir, container->get_name() + ".md.json");
-    container->set_uri(this->path_join(dataset_dir, container->get_name() + '.' + container->get_format().get_name()));
+    container->set_uri(this->path_join(dataset_dir, container->get_name() + '.' + container->get_format()->get_name()));
 
     this->write_processeddata(container, data_md_file);
 
@@ -339,8 +345,8 @@ SxExperiment* SxRequestLocal::read_experiment(const QString& md_uri)
         SxExperiment *container = new SxExperiment();
         QJsonObject information = metadata["information"].toObject();
         container->set_name(information["name"].toString());
-        container->set_author(SxUser(information["author"].toString()));
-        container->set_date(SxDate(information["date"].toString()));
+        container->set_author(new SxUser(information["author"].toString()));
+        container->set_date(new SxDate(information["date"].toString()));
         container->set_raw_dataset(this->absolute_path(this->normalize_path_sep(metadata["rawdataset"].toString()), _md_uri));
 
         QJsonArray pdatasets = metadata["processeddatasets"].toArray();
@@ -366,8 +372,8 @@ void SxRequestLocal::write_experiment(SxExperiment* container, const QString& md
     QJsonObject metadata;
     QJsonObject information;
     information["name"] = container->get_name();
-    information["author"] = container->get_author().get_username();
-    information["date"] = container->get_date().get_to_string("YYYY-MM-DD");
+    information["author"] = container->get_author()->get_username();
+    information["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     metadata["information"] = metadata;
     metadata["rawdataset"] = this->to_unix_path(this->relative_path(container->get_raw_dataset(), _md_uri));
 
@@ -389,32 +395,195 @@ void SxRequestLocal::write_experiment(SxExperiment* container, const QString& md
 
 void SxRequestLocal::create_experiment(SxExperiment* container, const QString& uri)
 {
+    // check the destination dir
+    QFileInfo file_info(uri);
+    QString _uri = file_info.absoluteFilePath();
+    if ( !QFile::exists(_uri)){
+        throw SxException("Cannot create Experiment: the destination directory does not exists");
+    }
 
+    // create the experiment directory
+    QString filtered_name = container->get_name().replace(" ", "");
+    QString experiment_path = this->path_join(_uri, filtered_name);
+    QDir exp_dir(experiment_path);
+    if (!exp_dir.exists())
+    {
+        exp_dir.mkdir(experiment_path);
+    }
+    else{
+        throw SxException("Cannot create Experiment: the experiment directory already exists");
+    }
+
+    // create an empty raw dataset
+    QString rawdata_path = this->path_join(experiment_path, "data");
+    QString rawdataset_md_url = this->path_join(rawdata_path, "rawdataset.md.json");
+    container->set_raw_dataset(rawdataset_md_url);
+    QDir raw_data_dir(rawdata_path);
+    if (!raw_data_dir.exists()){
+        raw_data_dir.mkdir(rawdata_path);
+    }
+    else
+    {
+        throw SxException("Cannot create Experiment raw dataset: the experiment directory does not exists");
+    }
+
+    SxDataset* rawdataset = new SxDataset();
+    rawdataset->set_md_uri(rawdataset_md_url);
+    rawdataset->set_name("data");
+    this->write_rawdataset(rawdataset, rawdataset_md_url);
+
+    // save the experiment.md.json metadata file
+    QString md_uri = this->path_join(experiment_path, "experiment.md.json");
+    container->set_md_uri(md_uri);
+    this->write_experiment(container, md_uri);
 }
 
-void SxRequestLocal::import_data(const QString& data_path, const QString& rawdataset_uri, SxRawData* metadata, bool copy)
+QString SxRequestLocal::import_data(const QString& data_path, const QString& rawdataset_uri, SxRawData* metadata, bool copy)
 {
+    QFileInfo file_info(rawdataset_uri);
+    QString _rawdataset_uri = file_info.absoluteFilePath();
+    QString data_dir_path = file_info.absolutePath();
 
+    // create the new data uri
+    QFileInfo data_file_info(data_path);
+    QString data_base_name = data_file_info.baseName();
+    QString filtered_name = data_base_name.replace(" " , "");
+    QString md_uri = this->path_join(data_dir_path, filtered_name + ".md.json");
+
+    // import data
+    if (copy){
+        QString copied_data_path = this->path_join(data_dir_path, data_base_name);
+        QFile copyfile(data_path);
+        copyfile.copy(copied_data_path);
+        metadata->set_uri(copied_data_path);
+    }
+    else
+    {
+        metadata->set_uri(data_path);
+    }
+    metadata->set_md_uri(md_uri);
+    this->write_rawdata(metadata, md_uri);
+
+    // add data to experiment RawDataSet
+    SxDataset* rawdataset_container = this->read_rawdataset(rawdataset_uri);
+    rawdataset_container->set_data(md_uri);
+    this->write_rawdataset(rawdataset_container, rawdataset_uri);
+
+    return md_uri;
 }
 
 SxRun* SxRequestLocal::read_run(const QString& md_uri)
 {
+    QFileInfo file_info(md_uri);
+    QString _md_uri = file_info.absoluteFilePath();
+    if (QFile::exists(_md_uri))
+    {
+        QJsonObject metadata = this->read_json(md_uri);
+        SxRun* container = new SxRun();
+        container->set_md_uri(_md_uri);
 
+        QJsonObject json_process = metadata["process"].toObject();
+        container->set_process_name(json_process["name"].toString());
+        container->set_process_uri(json_process["url"].toString());
+
+        container->set_processed_dataset(metadata["processeddataset"].toString());
+        QJsonArray json_inputs = metadata["inputs"].toArray();
+        for (qint8 i = 0 ; i < json_inputs.count() ; ++i){
+            QJsonObject json_input = json_inputs[i].toObject();
+            SxRunInput *input = new SxRunInput(json_input["name"].toString(),
+                                               json_input["dataset"].toString(),
+                                               json_input["query"].toString(),
+                                               json_input["origin_output_name"].toString());
+            container->set_input(input);
+        }
+        QJsonArray json_parameters = metadata["parameters"].toArray();
+        for (qint8 i = 0 ; i < json_parameters.count() ; ++i)
+        {
+            QJsonObject json_parameter = json_parameters[i].toObject();
+            SxRunParameter* parameter = new SxRunParameter(json_parameter["name"].toString(),
+                                                           json_parameter["value"].toString());
+            container->set_parameter(parameter);
+
+        }
+        return container;
+    }
+    throw SxException("The run metadata at the given URI does not exists");
 }
 
 void SxRequestLocal::write_run(SxRun* container, const QString& md_uri)
 {
+    QFileInfo file_info(md_uri);
+    QString _md_uri = file_info.absoluteFilePath();
 
+    QJsonObject json_metadata;
+    QJsonObject json_process;
+    json_process["name"] = container->get_process_name();
+    json_process["url"] = this->to_unix_path(container->get_process_uri());
+    json_metadata["process"] = json_process;
+
+    json_metadata["processeddataset"] = container->get_processed_dataset();
+
+    QJsonArray json_inputs;
+    for (qint8 i = 0 ; i < container->get_inputs_count() ; ++i){
+        QJsonObject json_input;
+        SxRunInput* input = container->get_input(i);
+        json_input["name"] = input->get_name();
+        json_input["dataset"] = input->get_dataset();
+        json_input["query"] = input->get_query();
+        json_input["origin_output_name"] = input->get_origin_output_name();
+        json_inputs.append(json_input);
+    }
+    json_metadata["inputs"] = json_inputs;
+
+    QJsonArray json_parameters;
+    for (qint8 i = 0 ; i < container->get_parameters_count() ; ++i){
+        QJsonObject json_parameter;
+        json_parameter["name"] = container->get_parameter(i)->get_name();
+        json_parameter["value"] = container->get_parameter(i)->get_value();
+        json_parameters.append(json_parameter);
+    }
+    json_metadata["parameters"] = json_parameters;
+
+    this->write_json(json_metadata, _md_uri);
 }
 
 QStringList SxRequestLocal::query_rep(const QString& repository_uri, const QString& filter_)
 {
+    QDir dir(repository_uri);
+    QFileInfoList entries = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files );
 
+    qint8 count = 0;
+    QStringList out_uris;
+    foreach ( QFileInfo entryInfo, entries )
+    {
+        QString path = entryInfo.absoluteFilePath();
+        count++;
+
+        QRegularExpression re(filter_);
+        QRegularExpressionMatch match = re.match(path);
+        bool hasMatch = match.hasMatch(); // true
+        if (hasMatch){
+            out_uris.append(path);
+        }
+    }
+    return out_uris;
 }
 
 QString SxRequestLocal::create_output_uri(const QString& output_rep_uri, const QString& output_name, const QString& format_, const QString& corresponding_input_uri)
 {
+    QString _output_rep_uri = output_rep_uri;
+    QFileInfo input_file_info(corresponding_input_uri);
+    if (_output_rep_uri == ""){
+        _output_rep_uri = input_file_info.absolutePath();
+    }
+    QString input_name = input_file_info.baseName();
+    QString output_uri = this->path_join(output_rep_uri, output_name + "_" + input_name + "." + format_);
 
+    if (QFile::exists(output_uri)){
+        QFile file(output_uri);
+        file.remove();
+    }
+    return output_uri;
 }
 
 QString SxRequestLocal::path_join(QString path1, QString path2)

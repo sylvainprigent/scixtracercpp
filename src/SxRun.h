@@ -11,11 +11,14 @@
 #include "SxContainer.h"
 #include "SxMetadata.h"
 
-class SCIXTRACER_EXPORT SRunInput: public SxContainer{
+class SCIXTRACER_EXPORT SxRunInput: public SxContainer{
+
+    Q_OBJECT
 
 public:
-    SRunInput();
-    ~SRunInput();
+    SxRunInput();
+    SxRunInput(const QString& name, const QString& uri, const QString& query, const QString& origin);
+    ~SxRunInput();
 
 public:
     // getters
@@ -55,11 +58,14 @@ private:
 
 };
 
-class SCIXTRACER_EXPORT SRunParameter: public SxContainer{
+class SCIXTRACER_EXPORT SxRunParameter: public SxContainer{
+
+    Q_OBJECT
 
 public:
-    SRunParameter();
-    ~SRunParameter();
+    SxRunParameter();
+    SxRunParameter(const QString& name, const QString& value);
+    ~SxRunParameter();
 
 public:
     // getters
@@ -89,9 +95,11 @@ private:
 /// \brief Metadata container for a process run (or job)
 class SCIXTRACER_EXPORT SxRun: public SxMetadata{
 
+    Q_OBJECT
+
 public:
     SxRun();
-    ~SxRun();
+    virtual ~SxRun();
 
 public:
     // getters
@@ -110,20 +118,20 @@ public:
     /// \brief Get the input at the index
     /// \param[in] index Index of the input in the input list
     /// \return Reference to the run input container
-    SRunInput get_input(qint8 index);
+    SxRunInput *get_input(qint8 index);
     /// \brief Get the list of all inputs used by the process
     /// \return List of references to the run input containers
-    QList<SRunInput> get_inputs();
+    QList<SxRunInput*> get_inputs();
     /// \brief Get the number of parameters used to tune the process
     /// \return Number of parameters
     qint8 get_parameters_count();
     /// \brief Get the parameter at the index
     /// \param[in] index Index of the parameter in the output list
     /// \return Reference to the parameter container
-    SRunParameter get_parameter(qint8 index);
+    SxRunParameter* get_parameter(qint8 index);
     /// \brief Get the list of all parameters used by the process
     /// \return List of references to the parameter containers
-    QList<SRunParameter> get_parameters();
+    QList<SxRunParameter*> get_parameters();
 
 public:
     // setters
@@ -136,17 +144,17 @@ public:
     /// \brief Set the URI of the process that is runned
     /// \param[in] uri URI of the process
     void set_process_uri(const QString& uri);
-    /// \brief Set the input at the index
+    /// \brief Set the input
     /// \param[in] input Reference to the run input container
-    void set_input(SRunInput& input);
-    /// \brief Set the parameter at the index
+    void set_input(SxRunInput* input);
+    /// \brief Set the parameter
     /// \param[in] parameter Reference to the run parameter container
-    void set_parameter(SRunParameter& parameter);
+    void set_parameter(SxRunParameter *parameter);
 
 private:
     QString m_processed_dataset_uri;
     QString m_process_name;
     QString m_process_uri;
-    QList<SRunInput> m_inputs;
-    QList<SRunParameter> m_parameters;
+    QList<SxRunInput*> m_inputs;
+    QList<SxRunParameter*> m_parameters;
 };

@@ -14,6 +14,8 @@
 /// \brief Container for user information
 class SCIXTRACER_EXPORT SxUser: public SxContainer{
 
+    Q_OBJECT
+
 public:
     SxUser();
     SxUser(const QString& username);

@@ -27,17 +27,17 @@ QString SxData::get_name()
     return m_name;
 }
 
-SxUser SxData::get_author()
+SxUser* SxData::get_author()
 {
     return m_author;
 }
 
-SxDate SxData::get_date()
+SxDate* SxData::get_date()
 {
     return m_date;
 }
 
-SxFormat SxData::get_format()
+SxFormat *SxData::get_format()
 {
     return m_format;
 }
@@ -57,17 +57,17 @@ void SxData::set_name(const QString& name)
     m_name = name;
 }
 
-void SxData::set_author(const SxUser& user)
+void SxData::set_author(SxUser* user)
 {
     m_author = user;
 }
 
-void SxData::set_date(const SxDate& date)
+void SxData::set_date(SxDate* date)
 {
     m_date = date;
 }
 
-void SxData::set_format(const SxFormat& format)
+void SxData::set_format(SxFormat* format)
 {
     m_format = format;
 }

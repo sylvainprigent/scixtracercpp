@@ -61,6 +61,7 @@ if(sx_BUILD_TOOLS)
   add_subdirectory( tools )
 endif(sx_BUILD_TOOLS)
 if(sx_BUILD_TESTS)
+  enable_testing()
   add_subdirectory( tests )
 endif(sx_BUILD_TESTS)
 
