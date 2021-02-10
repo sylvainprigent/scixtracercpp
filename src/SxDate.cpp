@@ -8,6 +8,7 @@
 #include "SxException.h"
 
 #include <QStringList>
+#include <QDebug>
 
 SxDate::SxDate() : SxContainer()
 {
@@ -37,7 +38,7 @@ QString SxDate::get_to_string(QString format)
     }
 }
 
-qint8 SxDate::get_year()
+qint16 SxDate::get_year()
 {
     return m_year;
 }
@@ -52,7 +53,7 @@ qint8 SxDate::get_day()
     return m_day;
 }
 
-void SxDate::set_year(qint8 value)
+void SxDate::set_year(qint16 value)
 {
     m_year = value;
 }
@@ -81,6 +82,7 @@ void SxDate::set_from_string(QString value)
     QString v2 = value;
     QStringList date_en = v2.split("-");
     if (date_en.count() == 3){
+
         m_day = date_en[2].toInt();
         m_month = date_en[1].toInt();
         m_year = date_en[0].toInt();
@@ -90,7 +92,7 @@ void SxDate::set_from_string(QString value)
     throw SxException("Cannot set the date from string. Format not correct");
 }
 
-QString SxDate::number_to_str(qint8 number, qint8 digits)
+QString SxDate::number_to_str(qint16 number, qint8 digits)
 {
     return QStringLiteral("%1").arg(number, digits, 10, QLatin1Char('0'));
 }

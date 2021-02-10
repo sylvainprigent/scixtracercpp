@@ -26,6 +26,18 @@ public:
     virtual ~SxRequest();
 
 public:
+    /// \brief Get the parent data of a data
+    /// \param[in] data_md_uri URI of the data to query
+    /// \return a pointer to the parent data
+    SxData* get_parent(const QString& data_md_uri);
+    /// \brief Get the first metadata of the parent data.
+    /// The origin data is a RawData. It is the first data that have
+    /// been seen by scixtracer
+    /// \param[in] data_md_uri URI of the data to query
+    /// \return  a pointer to the origin data
+    SxRawData* get_origin(const QString& data_md_uri);
+
+public:
     /// \brief Read a raw data metadata from the database
     /// \param[in] md_uri URI of the data
     /// \return a RawDataContainer that stores the raw data metadata

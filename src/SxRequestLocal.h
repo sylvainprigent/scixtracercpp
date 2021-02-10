@@ -120,7 +120,7 @@ private:
     /// \param[in] filename Path of the file for writing
     void write_json(QJsonObject object, const QString& filename);
 
-private:
+public:
     /// \brief Join two path, and add separator if necessary
     /// \param[in] path1 Start string of the path
     /// \param[in] path2 End string of the path

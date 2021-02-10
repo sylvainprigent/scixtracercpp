@@ -96,18 +96,19 @@ void SxRequestLocal::write_rawdata(SxRawData* container, const QString& md_uri)
     QJsonObject common;
     common["name"] = container->get_name();
     common["author"] = container->get_author()->get_username();
-    common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     common["format"] = container->get_format()->get_name();
+    common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     common["url"] = this->to_unix_path(this->relative_path(container->get_uri(), _md_uri));
     metadata["common"] = common;
 
-    QJsonObject tags;
+    QJsonObject json_tags;
     SxTags* _tags = container->get_tags();
     QStringList keys = _tags->get_keys();
     for (qint8 i = 0 ; i < keys.count() ; ++i)
     {
-        tags[keys[i]] = _tags->get_tag(keys[i]);
+        json_tags[keys[i]] = _tags->get_tag(keys[i]);
     }
+    metadata["tags"] = json_tags;
 
     this->write_json(metadata, _md_uri);
 }
@@ -136,7 +137,7 @@ SxProcessedData* SxRequestLocal::read_processeddata(const QString& md_uri)
             QJsonObject input = inputs_[i].toObject();
             SxProcessedDataInput* input_data = new SxProcessedDataInput();
             input_data->set_name(input["name"].toString());
-            input_data->set_uri(absolute_path(normalize_path_sep(input["name"].toString()), _md_uri));
+            input_data->set_uri(this->absolute_path(this->normalize_path_sep(input["url"].toString()), _md_uri));
             input_data->set_type(input["type"].toString());
             container->set_run_input(input["name"].toString(), input_data);
         }
@@ -180,7 +181,7 @@ void SxRequestLocal::write_processeddata(SxProcessedData* container, const QStri
         SxProcessedDataInput* input_data = container->get_run_input(i);
         QJsonObject input_json;
         input_json["name"] = input_data->get_name();
-        input_json["url"] = input_data->get_uri();
+        input_json["url"] = this->to_unix_path(this->relative_path(input_data->get_uri(), _md_uri));
         input_json["type"] = input_data->get_type();
         inputs_json.append(input_json);
     }
@@ -189,7 +190,7 @@ void SxRequestLocal::write_processeddata(SxProcessedData* container, const QStri
     QJsonObject output_json;
     output_json["name"] = container->get_run_output()->get_name();
     output_json["label"] = container->get_run_output()->get_label();
-    origin["output"] = inputs_json;
+    origin["output"] = output_json;
     metadata["origin"] = origin;
 
     this->write_json(metadata, _md_uri);
@@ -374,7 +375,7 @@ void SxRequestLocal::write_experiment(SxExperiment* container, const QString& md
     information["name"] = container->get_name();
     information["author"] = container->get_author()->get_username();
     information["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
-    metadata["information"] = metadata;
+    metadata["information"] = information;
     metadata["rawdataset"] = this->to_unix_path(this->relative_path(container->get_raw_dataset(), _md_uri));
 
     QJsonArray jprocesseddatasets;
@@ -611,20 +612,26 @@ QString SxRequestLocal::relative_path(const QString& file, const QString& refere
     reference_file_ = reference_file_.replace(separator + separator, separator);
 
     QString common_part;
-    for (qint8 i = 0 ; i < file.count() ; i++)
+    for (qint16 i = 0 ; i < reference_file_.count() ; i++)
     {
         common_part = reference_file_.left(i);
-        if (!file_.contains(file)){
+        if (!file_.contains(common_part)){
+            common_part = reference_file_.left(i-1);
             break;
         }
     }
 
-    qint8 last_separator = common_part.lastIndexOf(separator);
-    QString short_reference_file = reference_file_.right(last_separator+1);
+    //qDebug() << "common part:" << common_part;
 
-    qint8 number_of_sub_folder = short_reference_file.count(separator);
-    QString short_file = file.right(last_separator + 1);
-    for (qint8 i = 0 ; i < number_of_sub_folder ; i++){
+    qint16 last_separator = common_part.lastIndexOf(separator);
+    QString short_reference_file = reference_file_.right(reference_file_.count() - (last_separator+1));
+    //qDebug() << "short_reference_file:" << short_reference_file;
+
+    qint16 number_of_sub_folder = short_reference_file.count(separator);
+    //qDebug() << "number_of_sub_folder:" << number_of_sub_folder;
+    QString short_file = file.right(file.count() - (last_separator + 1));
+    //qDebug() << "short_file:" << short_file;
+    for (qint16 i = 0 ; i < number_of_sub_folder ; i++){
         short_file = ".." + separator + short_file;
     }
 
@@ -638,7 +645,7 @@ QString SxRequestLocal::absolute_path(const QString& file, const QString &refere
         return f_info.absoluteFilePath();
     }
 
-    qint8 last_separator = reference_file.lastIndexOf(QDir::separator());
+    qint16 last_separator = reference_file.lastIndexOf(QDir::separator());
     QString canonical_path = reference_file.left(last_separator+1);
     return SxRequestLocal::simplify_path(canonical_path + file);
 }
@@ -653,11 +660,12 @@ QString SxRequestLocal::simplify_path(const QString& path)
     QStringList keep_folders = path.split(QDir::separator());
 
     bool found = true;
+    QStringList folders = keep_folders;
     while (found)
     {
-        qint8 pos = -1;
-        QStringList folders = keep_folders;
-        for (qint8 i=0 ; i<folders.count() ; ++i)
+        qint16 pos = -1;
+        folders = keep_folders;
+        for (qint16 i=0 ; i<folders.count() ; ++i)
         {
             if (folders[i] == "..")
             {
@@ -667,12 +675,13 @@ QString SxRequestLocal::simplify_path(const QString& path)
         }
         if (pos > -1)
         {
-            QStringList keep_folders;
-            for (qint8 i = 0 ; i < pos - 1 ; ++i)
+            keep_folders = {};
+
+            for (qint16 i = 0 ; i < pos-1 ; ++i)
             {
                 keep_folders.append(folders[i]);
             }
-            for (qint8 i = pos + 1 ; i < folders.count() ; ++i)
+            for (qint16 i = pos+1 ; i < folders.count() ; ++i)
             {
                 keep_folders.append(folders[i]);
             }
@@ -684,7 +693,7 @@ QString SxRequestLocal::simplify_path(const QString& path)
     }
 
     QString clean_path = "";
-    for (qint8 i = 0 ; i < keep_folders.count(); ++i )
+    for (qint16 i = 0 ; i < keep_folders.count(); ++i )
     {
         clean_path += keep_folders[i];
         if (i < keep_folders.count() - 1)

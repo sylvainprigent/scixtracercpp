@@ -1,7 +1,7 @@
 #include <scixtracer>
 
 
-int main(int argc, char* argv[])
+int main(void)
 { 
     SxObject object;
     object.set_object_name("object name");
