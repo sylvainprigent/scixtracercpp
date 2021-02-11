@@ -18,3 +18,4 @@
 #define ref_rawdataset_file "@ref_rawdataset_file@"
 #define ref_processeddataset1_file "@ref_processeddataset1_file@"
 #define ref_processeddataset2_file "@ref_processeddataset2_file@"
+#define test_images_data_dir "@test_images_data_dir@"

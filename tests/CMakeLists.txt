@@ -20,6 +20,7 @@ project(scixtracerTest)
 set(${PROJECT_NAME}_MAIN_SOURCES
   TestSxData.cpp
   TestSxObject.cpp
+  TestSxRequest.cpp
   TestSxRequestLocal.cpp
 )
 
@@ -48,6 +49,8 @@ set(ref_processeddataset2_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process
 set(ref_process1_run_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/run.md.json)
 set(ref_rawdata_img_uri ${PROJECT_SOURCE_DIR}/test_metadata_local/data/population1_001.tif)
 set(ref_processeddata_img_uri ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_001_o.tif)
+
+set(test_images_data_dir ${PROJECT_SOURCE_DIR}/test_images/data/)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/SxTestConfig.h.in)
   configure_file(SxTestConfig.h.in ${CMAKE_BINARY_DIR}/SxTestConfig.h)
