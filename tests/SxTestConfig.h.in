@@ -6,6 +6,7 @@
 #define ref_processeddata_file "@ref_processeddata_file@"
 #define tst_processeddata_file "@tst_processeddata_file@"
 #define ref_processeddata2_file "@ref_processeddata2_file@"
+#define ref_processed2data2_file "@ref_processed2data2_file@"
 #define ref_processeddata3_file "@ref_processeddata3_file@"
 #define ref_dataset_file "@ref_dataset_file@"
 #define tst_dataset_file "@tst_dataset_file@"
@@ -18,4 +19,5 @@
 #define ref_rawdataset_file "@ref_rawdataset_file@"
 #define ref_processeddataset1_file "@ref_processeddataset1_file@"
 #define ref_processeddataset2_file "@ref_processeddataset2_file@"
+#define test_images_data_file1 "@test_images_data_file1@"
 #define test_images_data_dir "@test_images_data_dir@"

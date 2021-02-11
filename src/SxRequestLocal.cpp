@@ -55,7 +55,7 @@ SxRawData* SxRequestLocal::read_rawdata(const QString& md_uri)
     QString _md_uri = file_info.absoluteFilePath();
     if (QFile::exists(_md_uri) && _md_uri.endsWith(".md.json"))
     {
-        qDebug() << "parse the json file";
+        //qDebug() << "parse the json file";
         QJsonObject metadata = this->read_json(_md_uri);
         SxRawData* container = new  SxRawData();
         QJsonObject common = metadata["common"].toObject();
@@ -453,7 +453,8 @@ QString SxRequestLocal::import_data(const QString& data_path, const QString& raw
 
     // import data
     if (copy){
-        QString copied_data_path = this->path_join(data_dir_path, data_base_name);
+        QString copied_data_path = this->path_join(data_dir_path, data_file_info.fileName());
+        //qDebug() << "copy file: " << data_path << ", to: " <<  copied_data_path ;
         QFile copyfile(data_path);
         copyfile.copy(copied_data_path);
         metadata->set_uri(copied_data_path);

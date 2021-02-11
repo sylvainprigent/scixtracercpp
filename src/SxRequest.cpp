@@ -72,8 +72,10 @@ void SxRequest::import_dir_experiment(SxExperiment* experiment, const QString& d
 {
     QDir directory(dir_uri);
     QStringList data_files = directory.entryList(QDir::Files);
+    data_files.sort();
     qint16 count = 0;
-    foreach(QString filename, data_files) {
+    for (qint16 i = 0 ; i < data_files.count() ; ++i){
+        QString filename = data_files[i];
         count ++;
         QRegularExpression re(filter_);
         QRegularExpressionMatch match = re.match(filename);

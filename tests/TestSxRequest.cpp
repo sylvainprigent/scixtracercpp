@@ -13,8 +13,10 @@ void tearDown()
 {
     // remove myexperiment
     QString path = QString(tst_experiment_dir) + QDir::separator() + "myexperiment";
+    //qDebug() << "try to clean the directory: " << path;
     QDir qt_tst_experiment_dir(path);
     if (qt_tst_experiment_dir.exists()){
+        //qDebug() << "do the cleaning of: " << path;
         qt_tst_experiment_dir.removeRecursively();
     }
 }
@@ -32,7 +34,7 @@ qint8 test_import_data()
 {
     SxExperiment* experiment = _create_experiment();
     SxRequestLocal request;
-    QString data_path = ref_rawdata_file1;
+    QString data_path = test_images_data_file1;
     QString name = "population1_001.tif";
     SxUser *author = new SxUser("Sylvain Prigent");
     SxFormat *format = new SxFormat("tif");
@@ -117,7 +119,7 @@ qint8 test_tag_from_name()
     SxDate* date = new SxDate("2021-02-11");
     request.import_dir_experiment(experiment, dir_uri, filter_, author, format, date, true);
 
-    QStringList values = {"population1", "popilation2"};
+    QStringList values = {"population1", "population2"};
     request.tag_from_name(experiment, "Population", values);
 
     // check
@@ -142,6 +144,8 @@ qint8 test_tag_from_name()
     {
         t3 = 0;
     }
+
+    //qDebug() << "t1=" << t1 << ", t2=" << t2 << ", t3=" << t3;
     return t1+t2+t3;
 }
 
@@ -219,12 +223,13 @@ qint8 test_get_data2()
     SxFormat *format = new SxFormat("tif");
     SxDate* date = new SxDate("2021-02-11");
     request.import_dir_experiment(experiment, dir_uri, filter_, author, format, date, true);
-    QStringList values = {"population1", "popilation2"};
+    QStringList values = {"population1", "population2"};
     request.tag_from_name(experiment, "Population", values);
     request.tag_using_seperator(experiment, "ID", "_", 1);
 
     // get data
     QStringList data_list = request.get_data(experiment, "data", "Population=population2 AND ID<=2");
+    //qDebug() << "query res = " << data_list;
     if (data_list.count() == 2){
         return 0;
     }
@@ -234,9 +239,11 @@ qint8 test_get_data2()
 qint8 test_parent()
 {
     SxRequestLocal request;
-    SxData* parent_data = request.get_parent(ref_processeddata2_file);
+    SxData* parent_data = request.get_parent(ref_processed2data2_file);
 
-    if (parent_data->get_name() == "population1_001_o")
+    qDebug() << "parent data name=" << parent_data->get_name();
+
+    if (parent_data->get_name() == "population1_002_o")
     {
         return 0;
     }
@@ -246,9 +253,11 @@ qint8 test_parent()
 qint8 test_origin()
 {
     SxRequestLocal request;
-    SxData* origin_data = request.get_origin(ref_processeddata2_file);
+    SxData* origin_data = request.get_origin(ref_processed2data2_file);
 
-    if (origin_data->get_name() == "population1_001.tif")
+    qDebug() << "origin data name=" << origin_data->get_name();
+
+    if (origin_data->get_name() == "population1_002.tif")
     {
         return 0;
     }
@@ -261,6 +270,7 @@ int main(void)
         return 1;
     }
     tearDown();
+
 
     if (test_import_dir()){
         return 1;
@@ -296,5 +306,6 @@ int main(void)
     }
 
     tearDown();
+
     return 0;
 }

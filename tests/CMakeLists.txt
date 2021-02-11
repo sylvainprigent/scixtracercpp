@@ -35,6 +35,7 @@ set(tst_rawdata_file ${PROJECT_SOURCE_DIR}/test_metadata_local/data/population1_
 set(ref_processeddata_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_001_o.md.json)
 set(tst_processeddata_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_001_o_tst.md.json)
 set(ref_processeddata2_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_002_o.md.json)
+set(ref_processed2data2_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process2/population1_002_o_o.md.json)
 set(ref_processeddata3_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_003_o.md.json)
 set(ref_dataset_file ${PROJECT_SOURCE_DIR}/test_metadata_local/data/rawdataset.md.json)
 set(tst_dataset_file ${PROJECT_SOURCE_DIR}/test_metadata_local/data/rawdataset_tst.md.json)
@@ -50,6 +51,7 @@ set(ref_process1_run_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/run
 set(ref_rawdata_img_uri ${PROJECT_SOURCE_DIR}/test_metadata_local/data/population1_001.tif)
 set(ref_processeddata_img_uri ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/population1_001_o.tif)
 
+set(test_images_data_file1 ${PROJECT_SOURCE_DIR}/test_images/data/population1_001.tif)
 set(test_images_data_dir ${PROJECT_SOURCE_DIR}/test_images/data/)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/SxTestConfig.h.in)
