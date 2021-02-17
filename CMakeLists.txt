@@ -1,7 +1,7 @@
 ############################################################
 #
 #
-# Copyright (c) SciXtracer 2021
+# Copyright (c) SciXtracerCpp 2021
 #
 # AUTHOR:
 # Sylvain Prigent
@@ -14,11 +14,11 @@
 cmake_minimum_required(VERSION 3.8)
 cmake_policy(VERSION 3.8)
 
-project(scixtracer LANGUAGES CXX VERSION 0.0.1)
+project(scixtracercpp LANGUAGES CXX VERSION 0.0.1)
 
-set(${PROJECT_NAME}_VERSION_MAJOR 0 CACHE STRING "scixtracer major version number." FORCE)
-set(${PROJECT_NAME}_VERSION_MINOR 0 CACHE STRING "scixtracer minor version number." FORCE)
-set(${PROJECT_NAME}_VERSION_BUILD 1 CACHE STRING "scixtracer build version number." FORCE)
+set(${PROJECT_NAME}_VERSION_MAJOR 0 CACHE STRING "scixtracercpp major version number." FORCE)
+set(${PROJECT_NAME}_VERSION_MINOR 0 CACHE STRING "scixtracercpp minor version number." FORCE)
+set(${PROJECT_NAME}_VERSION_BUILD 1 CACHE STRING "scixtracercpp build version number." FORCE)
 set(${PROJECT_NAME}_VERSION
   "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_BUILD}")
 
@@ -33,9 +33,9 @@ mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
 # Cmake config file directory path
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(sxBuild)
+include(scixtracercppBuild)
 
-set(sxProject_USE_DOXYGEN 0)
+set(scixtracercppProject_USE_DOXYGEN 0)
 
 
 
@@ -47,23 +47,23 @@ if (SL_USE_OPENMP)
     add_compile_definitions(SL_USE_OPENMP)
 endif(SL_USE_OPENMP)
 
-include(sxDependencies)
+include(scixtracercppDependencies)
 
 ## #################################################################
 ## Define Internal Architecture (for includes)
 ## #################################################################
-option(sx_BUILD_TOOLS "Build Tools" OFF)
-option(sx_BUILD_TESTS "Build Tests" OFF)
+option(scixtracercpp_BUILD_TOOLS "Build Tools" OFF)
+option(scixtracercpp_BUILD_TESTS "Build Tests" OFF)
 
 
 add_subdirectory( src )
-if(sx_BUILD_TOOLS)
+if(scixtracercpp_BUILD_TOOLS)
   add_subdirectory( tools )
-endif(sx_BUILD_TOOLS)
-if(sx_BUILD_TESTS)
+endif(scixtracercpp_BUILD_TOOLS)
+if(scixtracercpp_BUILD_TESTS)
   enable_testing()
   add_subdirectory( tests )
-endif(sx_BUILD_TESTS)
+endif(scixtracercpp_BUILD_TESTS)
 
 ## #################################################################
 ## Build Documentation

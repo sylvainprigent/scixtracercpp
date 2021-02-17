@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) SciXtracer 2021
+# Copyright (c) SciXtracerCpp 2021
 #
 # AUTHOR:
 # Sylvain Prigent

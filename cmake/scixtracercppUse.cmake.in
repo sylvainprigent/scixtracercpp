@@ -16,16 +16,16 @@
 ## 
 ######################################################################
 
-if(NOT scixtracer_USE_FILE_INCLUDED)
+if(NOT scixtracercpp_USE_FILE_INCLUDED)
 
-   set(scixtracer_USE_FILE_INCLUDED 1)
+   set(scixtracercpp_USE_FILE_INCLUDED 1)
 
-   include_directories(${scixtracer_INCLUDE_DIRS})
+   include_directories(${scixtracercpp_INCLUDE_DIRS})
 
-   link_directories(${scixtracer_LIBRARY_DIRS})
+   link_directories(${scixtracercpp_LIBRARY_DIRS})
 
-   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${scixtracer_CMAKE_DIR})
+   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${scixtracercpp_CMAKE_DIR})
 
-   include(scixtracerDependencies)
+   include(scixtracercppDependencies)
    
-endif(NOT scixtracer_USE_FILE_INCLUDED)
+endif(NOT scixtracercpp_USE_FILE_INCLUDED)

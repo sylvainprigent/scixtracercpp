@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) scixtracer 2020
+# Copyright (c) scixtracercpp 2020
 #
 # AUTHOR:
 # Sylvain Prigent
