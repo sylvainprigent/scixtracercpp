@@ -1,5 +1,5 @@
 #include "SxTestConfig.h"
-#include <scixtracer>
+#include <scixtracercpp>
 
 #include "CreateMetadata.h"
 #include "SxCompare.h"

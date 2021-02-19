@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <scixtracer>
+#include <scixtracercpp>
 
 SxRawData* create_raw_data();
 SxProcessedData* create_processed_data();

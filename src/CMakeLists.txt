@@ -9,7 +9,7 @@
 # 
 
 # Project name
-project(scixtracer)
+project(scixtracercpp)
 
 ## #################################################################
 ## Define files

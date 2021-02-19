@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <scixtracer>
+#include <scixtracercpp>
 
 
 class SxCompare{

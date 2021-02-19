@@ -68,7 +68,7 @@ foreach (test ${${PROJECT_NAME}_MAIN_SOURCES})
   get_filename_component(TName ${test} NAME_WE)
 
   add_executable(${TName} ${test} CreateMetadata.h CreateMetadata.cpp SxCompare.h SxCompare.cpp)
-  target_link_libraries(${TName} scixtracer ${SL_LIBRARIES})
+  target_link_libraries(${TName} scixtracercpp ${SL_LIBRARIES})
 
   add_test(${TName} ${EXECUTABLE_OUTPUT_PATH}/${TName})
 

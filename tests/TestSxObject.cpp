@@ -1,4 +1,4 @@
-#include <scixtracer>
+#include <scixtracercpp>
 
 
 int main(void)
