@@ -12,10 +12,10 @@ SxRunInput::SxRunInput() : SxContainer()
 
 }
 
-SxRunInput::SxRunInput(const QString& name, const QString& uri, const QString& query, const QString& origin) : SxContainer()
+SxRunInput::SxRunInput(const QString& name, const QString& dataset_name, const QString& query, const QString& origin) : SxContainer()
 {
     m_name = name;
-    m_dataset_uri = uri;
+    m_dataset_name = dataset_name;
     m_query = query;
     m_origin = origin;
 }
@@ -30,9 +30,9 @@ QString SxRunInput::get_name()
     return m_name;
 }
 
-QString SxRunInput::get_dataset()
+QString SxRunInput::get_dataset_name()
 {
-    return m_dataset_uri;
+    return m_dataset_name;
 }
 
 QString SxRunInput::get_query()
@@ -50,9 +50,9 @@ void SxRunInput::set_name(const QString& name)
     m_name = name;
 }
 
-void SxRunInput::set_dataset(const QString& uri)
+void SxRunInput::set_dataset_name(const QString &name)
 {
-    m_dataset_uri = uri;
+    m_dataset_name = name;
 }
 
 void SxRunInput::set_query(const QString& query)
@@ -109,13 +109,13 @@ SxRun::SxRun() : SxMetadata()
 
 SxRun::~SxRun()
 {
-
+    delete m_processed_dataset;
 }
 
 
-QString SxRun::get_processed_dataset()
+SxMetadata* SxRun::get_processed_dataset()
 {
-    return m_processed_dataset_uri;
+    return m_processed_dataset;
 }
 
 QString SxRun::get_process_name()
@@ -159,9 +159,9 @@ QList<SxRunParameter*> SxRun::get_parameters()
 }
 
 
-void SxRun::set_processed_dataset(const QString& uri)
+void SxRun::set_processed_dataset(SxMetadata *dataset)
 {
-    m_processed_dataset_uri = uri;
+    m_processed_dataset = dataset;
 }
 
 void SxRun::set_process_name(const QString& name)

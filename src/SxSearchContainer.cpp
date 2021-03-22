@@ -11,10 +11,11 @@ SxSearchContainer::SxSearchContainer() : SxContainer()
 
 }
 
-SxSearchContainer::SxSearchContainer(const QString& name, const QString& uri, SxTags* tags) : SxContainer()
+SxSearchContainer::SxSearchContainer(const QString& name, const QString& uri, const QString &uuid, SxTags* tags) : SxContainer()
 {
     m_name = name;
     m_uri = uri;
+    m_uuid = uuid;
     m_tags = tags;
 }
 
@@ -33,6 +34,11 @@ QString SxSearchContainer::get_uri()
     return m_uri;
 }
 
+QString SxSearchContainer::get_uuid()
+{
+    return m_uuid;
+}
+
 SxTags* SxSearchContainer::get_tags()
 {
     return m_tags;
@@ -46,6 +52,11 @@ void SxSearchContainer::set_name(const QString& name)
 void SxSearchContainer::set_uri(const QString& uri)
 {
     m_uri = uri;
+}
+
+void SxSearchContainer::set_uuid(const QString& uuid)
+{
+    m_uuid = uuid;
 }
 
 void SxSearchContainer::set_tags(SxTags* tags)

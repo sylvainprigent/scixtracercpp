@@ -20,36 +20,16 @@ QString SxMetadata::get_md_uri(){
     return m_md_uri;
 }
 
-void SxMetadata::add_child(SxMetadata* container)
-{
-    m_children[container->get_md_uri()] = container;
-}
-
-SxMetadata* SxMetadata::get_child(QString uri)
-{
-    return m_children[uri];
-}
-
-SxMetadata* SxMetadata::get_child_at(qint8 index)
-{
-    QMapIterator<QString, SxMetadata*> i(m_children);
-    qint8 j = -1;
-    while (i.hasNext()) {
-        i.next();
-        j++;
-        if (j == index){
-            return i.value();
-        }
-    }
-    return nullptr;
-}
-
-qint8 SxMetadata::get_children_count()
-{
-    return m_children.count();
+QString SxMetadata::get_uuid(){
+    return m_uuid;
 }
 
 void SxMetadata::set_md_uri(const QString& md_uri)
 {
     m_md_uri = md_uri;
+}
+
+void SxMetadata::set_uuid(const QString& uuid)
+{
+    m_uuid = uuid;
 }

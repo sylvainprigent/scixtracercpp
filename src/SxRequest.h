@@ -27,173 +27,156 @@ public:
     virtual ~SxRequest();
 
 public:
-    /// \brief Get the parent data of a data
-    /// \param[in] data_md_uri URI of the data to query
-    /// \return a pointer to the parent data
-    SxData* get_parent(const QString& data_md_uri);
-    /// \brief Get the first metadata of the parent data.
-    /// The origin data is a RawData. It is the first data that have
-    /// been seen by scixtracer
-    /// \param[in] data_md_uri URI of the data to query
-    /// \return  a pointer to the origin data
-    SxRawData* get_origin(const QString& data_md_uri);
+    /// \brief Create a new experiment
+    /// \param[in] name Name of the experiment
+    /// \param[in] author Username of the experiment author
+    /// \param[in] date Creation date of the experiment
+    /// \param[in] tag_keys List of keys used for the experiment vocabulary
+    /// \param[in] destination Destination where the experiment is created. It is a the path of the directory where the experiment will be created for local use case
+    /// \returns Experiment container with the experiment metadata
+    virtual SxExperiment* create_experiment(const QString& name, const QString &author, SxDate* date= new SxDate("now"), const QStringList& tag_keys = {}, const QString& destination=".") = 0;
 
-    /// \brief import data to an experiment
+    /// \brief Read an experiment from the database
+    /// \param[in] uri URI of the experiment. For local use case, the URI is either the path of the experiment directory, or the path of the experiment.md.json file
+    /// \return Experiment container with the experiment metadata
+    virtual SxExperiment* get_experiment(const QString uri) = 0;
+
+    /// \brief Write an experiment to the database
+    /// \param[in] experiment Container of the experiment metadata
+    virtual void update_experiment(SxExperiment* experiment) = 0;
+
+    /// \brief import one data to the experiment.
+    /// The data is imported to the rawdataset
+    /// \param[in] experiment Container of the experiment metadata
     /// \param[in] data_path Path of the accessible data on your local computer
     /// \param[in] name Name of the data
     /// \param[in] author Person who created the data
-    /// \param[in] format_ Format of the data (ex: tif)
+    /// \param[in] format Format of the data (ex: tif)
     /// \param[in] date Date when the data where created
-    /// \param[in] tags List of tags to identify the data
-    /// \param[in] copy  True to copy the data to the Experiment database, false otherwise
-    /// \return a pointer to the created metadata
-    SxRawData* import_data_experiment(SxExperiment* experiment, const QString& data_path, const QString& name,
-                                      SxUser* author, SxFormat* format, SxDate *date,
-                                      SxTags* tags, bool copy);
+    /// \param[in] tags Tags to identify the data
+    /// \param[in] copy True to copy the data to the Experiment database False otherwise
+    /// \returns a RawData containing the metadata
+    virtual SxRawData* import_data(SxExperiment* experiment, const QString& data_path, const QString& name, const QString& author, SxFormat* format, SxDate* date = new SxDate("now"), SxTags* tags = new SxTags(), bool copy = true) = 0;
 
+    /// \brief Read a raw data from the database
+    /// \param[in] uri URI if the rawdata
+    /// \returns RawData object containing the raw data metadata
+    virtual SxRawData* get_rawdata(const QString&  uri) = 0;
+
+    /// \brief Read a raw data from the database
+    /// \param[in] rawdata Container with the rawdata metadata
+    virtual void update_rawdata(SxRawData* rawdata) = 0;
+
+    /// \brief Read a processed data from the database
+    /// \param[in] uri URI if the processeddata
+    /// \return ProcessedData object containing the raw data metadata
+    virtual SxProcessedData* get_processeddata(const QString& uri) = 0;
+
+    /// \brief Read a processed data from the database
+    /// \param[in] processeddata Container with the processeddata metadata
+    virtual void update_processeddata(SxProcessedData* processeddata) = 0;
+
+    /// \brief Read a dataset from the database using it URI
+    /// \param[in] uri URI if the dataset
+    /// \return Dataset object containing the dataset metadata
+    virtual SxDataset* get_dataset_from_uri(const QString& uri) = 0;
+
+    /// \brief Read a processed data from the database
+    /// \param[in] dataset Container with the dataset metadata
+    virtual void update_dataset(SxDataset* dataset) = 0;
+
+    /// \brief Read the raw dataset from the database
+    /// \param[in] experiment Container of the experiment metadata
+    /// \return Dataset object containing the dataset metadata
+    virtual SxDataset* get_rawdataset(SxExperiment* experiment) = 0;
+
+    /// \brief Create a processed dataset in an experiment
+    /// \param[in] experiment Object containing the experiment metadata
+    /// \param[in] dataset_name Name of the dataset
+    /// \return Dataset object containing the new dataset metadata
+    virtual SxDataset* create_dataset(SxExperiment* experiment, const QString& dataset_name) = 0;
+
+    /// \brief Create a new run metadata
+    /// \param[in] dataset Object of the dataset metadata
+    /// \param[in] run_info Object containing the metadata of the run. md_uri is ignored and created automatically by this method
+    /// \return Run object with the metadata and the new created md_uri
+    virtual SxRun* create_run(SxDataset* dataset, SxRun* run_info) = 0;
+
+    /// \brief Read a run metadata from the data base
+    /// \param[in] uri URI of the run entry in the database
+    /// \return Run: object containing the run metadata
+    virtual SxRun* get_run(const QString& uri) = 0;
+
+    /// \brief Create a new processed data for a given dataset
+    /// \param[in] dataset Object of the dataset metadata
+    /// \param[in] run Metadata of the run
+    /// \param[in] processed_data Object containing the new processed data. md_uri is ignored and created automatically by this method
+    virtual SxProcessedData* create_data(SxDataset* dataset, SxRun* run, SxProcessedData* processed_data) = 0;
+
+
+
+public:
     /// \brief Import data from a directory to the experiment
     /// This method import with or without copy data contained
     /// in a local folder into an experiment. Imported data are
     /// considered as RawData for the experiment
-    /// \param[in] experiment Experiment container
+    /// \param[in] experiment Container of the experiment metadata
     /// \param[in] dir_uri URI of the directory containing the data to be imported
-    /// \param[in] filter_ Regular expression to filter which files in the folder to import
+    /// \param[in] filter Regular expression to filter which files in the folder to import
     /// \param[in] author Name of the person who created the data
-    /// \param[in] format_ Format of the image (ex: tif)
+    /// \param[in] format Format of the image (ex: tif)
     /// \param[in] date Date when the data where created
-    /// \param[in] copy True to copy the data to the experiment, false otherwise.
-    /// If the data are not copied, an absolute link to dir_uri is kept in the
-    /// experiment metadata. The original data directory must then not be
-    /// changed for the experiment to find the data.
-    void import_dir_experiment(SxExperiment* experiment, const QString& dir_uri,
-                               const QString& filter_, SxUser* author,
-                               SxFormat* format, SxDate *date, bool copy);
-    /// \brief Tag an experiment raw data using file name
-    /// \param[in] experiment Pointer to the experiment
+    /// \param[in] copy_data True to copy the data to the experiment, false otherwise. If the data are not copied, an absolute link to dir_uri is kept in the experiment metadata. The original data directory must then not be changed for the experiment to find the data.
+    void import_dir(SxExperiment* experiment, const QString& dir_uri, const QString& filter, const QString& author, SxFormat* format, SxDate* date, bool copy_data);
+
+    /// \brief Tag an experiment raw data using raw data file names
+    /// \param[in] experiment Container of the experiment metadata
     /// \param[in] tag The name (or key) of the tag to add to the data
-    /// \param[in] values List of possible values for the tag to find in the filename
+    /// \param[in] values List of possible values (str) for the tag to find in the filename
     void tag_from_name(SxExperiment* experiment, const QString& tag, const QStringList& values);
+
     /// \brief Tag an experiment raw data using file name and separator
-    /// \param[in] experiment Pointer to the experiment
+    /// \param[in] experiment Container of the experiment metadata
     /// \param[in] tag The name (or key) of the tag to add to the data
     /// \param[in] separator The character used as a separator in the filename (ex: _)
     /// \param[in] value_position Position of the value to extract with respect to the separators
-    void tag_using_seperator(SxExperiment* experiment, const QString& tag, const QString& separator, const qint16& value_position);
+    void tag_using_separator(SxExperiment* experiment, const QString& tag, const QString& separator, const qint16& value_position);
 
-    /// \brief query a specific dataset of an experiment
-    /// In this version only AND queries are supported (ex: tag1=value1 AND tag2=value2)
-    /// and performed on the data set named dataset
-    /// \param[in] experiment Pointer to the experiment
-    /// \param[in] dataset_name Name of the dataset to query
+    /// \brief Get the metadata of the parent data
+    /// The parent data can be a RawData or a ProcessedData
+    /// depending on the process chain
+    /// \param[in] processed_data Container of the processed data URI
+    /// \return Parent data (RawData or ProcessedData)
+    SxData* get_parent(SxProcessedData* processed_data);
+
+    /// \brief Get the first metadata of the parent data
+    /// The origin data is a RawData. It is the first data that have
+    /// been seen in the raw dataset
+    /// \param[in] processeddata Container of the processed data URI
+    /// \return  the origin data in a RawData object
+    SxRawData* get_origin(SxProcessedData* processed_data);
+
+    /// \brief Query a dataset from it name
+    /// \param[in] experiment Object containing the experiment metadata
+    /// \param[in] name Name of the dataset to query
+    /// \return a Dataset containing the dataset metadata. None is return if the dataset is not found
+    SxDataset* get_dataset(SxExperiment* experiment, const QString &name);
+
+    /// \brief Query data from a dataset
+    /// \param[in] dataset Object containing the dataset metadata
     /// \param[in] query String query with the key=value format
-    /// \param[in] origin_output_name Name of the ouput origin (ex: -o) in the case of ProcessedDataset search
-    /// \return The list of data metadata URIs
-    QStringList get_data(SxExperiment* experiment, const QString& dataset_name, const QString& query, const QString& origin_output_name="");
+    /// \param[in] origin_output_name Name of the output origin (ex: -o) in the case of ProcessedDataset search
+    /// \return List of selected data (list of RawData or ProcessedData objects)
+    QList<SxData*> get_data(SxDataset* dataset, const QString& query="", const QString& origin_output_name="");
 
-public:
-    /// \brief Read a raw data metadata from the database
-    /// \param[in] md_uri URI of the data
-    /// \return a RawDataContainer that stores the raw data metadata
-    virtual SxRawData* read_rawdata(const QString& md_uri) = 0;
-    /// \brief Write a raw data metadata to the database
-    /// \param[in] container Object that contains the raw data metadata to write
-    /// \param[in] md_uri URI of the data
-    virtual void write_rawdata(SxRawData* container, const QString& md_uri) = 0;
-    /// \brief Read a processed data metadata from the database
-    /// \param[in] URI of the data
-    /// \return ProcessedDataContainer: object that contains the read processed data metadata
-    virtual SxProcessedData* read_processeddata(const QString& md_uri) = 0;
-    /// \brief Write a processed data metadata to the database
-    /// \param[in] container Object that contains the processed data metadata to write
-    /// \param[in] md_uri URI of the data
-    virtual void write_processeddata(SxProcessedData* container, const QString& md_uri) = 0;
-    /// \brief Read a raw dataset metadata from the database
-    /// \param[in] md_uri URI of the dataset
-    /// \return Object that contains the read dataset metadata
-    virtual SxDataset* read_rawdataset(const QString& md_uri) = 0;
-    /// \brief Write a raw dataset metadata to the database
-    /// \param[in] container object that contains the raw dataset metadata to write
-    /// \param[in] md_uri URI of the dataset
-    virtual void write_rawdataset(SxDataset* container, const QString& md_uri) = 0;
-    /// \brief Read a processed dataset metadata from the database
-    /// \param[in] md_uri URI of the dataset
-    /// \return Object that contains the read dataset metadata
-    virtual SxDataset* read_processeddataset(const QString& md_uri) = 0;
-    /// \brief Write a processed dataset metadata to the database
-    /// \param[in] container Object that contains the processed dataset metadata to write
-    /// \param[in] md_uri URI of the dataset
-    virtual void write_processeddataset(SxDataset* container, const QString& md_uri) = 0;
-    /// \brief Add a run to a processed dataset
-    /// \param[in] run Container of the Run metadata
-    /// \param[in] dataset_md_uri URI of the ProcessedDataset
-    /// \return URI of the run metadata info
-    virtual QString add_run_processeddataset(SxRun* run, const QString& dataset_md_uri) = 0;
-    /// \brief Create a new processed dataset
-    /// \param[in] name Name of the processed dataset
-    /// \param[in] experiment_md_uri URI of the experiment that contains the dataset
-    /// \return Reference to the newly created dataset
-    virtual SxDataset *create_processed_dataset(const QString& name, const QString& experiment_md_uri) = 0;
-    /// \brief Create a new data metadata in the dataset
-    ///  The input data object must contain only the metadata (ie no uri and no md_uri).
-    ///  This method generate the uri and the md_uri and save all the metadata
-    /// \param[in] container Metadata of the processed data to create
-    /// \param[in] md_uri URI of the processed dataset
-    virtual void create_data_processeddataset(SxProcessedData* container, const QString& md_uri) = 0;
-    /// \brief Read an experiment metadata
-    /// \param[in] md_uri URI of the experiment in the database
-    /// \return object that contains an experiment metadata
-    virtual SxExperiment* read_experiment(const QString& md_uri) = 0;
-    /// \brief Write an experiment metadata to the database
-    /// \param[in] container Object that contains an experiment metadata
-    /// \param[in] md_uri URI of the experiment in the database
-    virtual void write_experiment(SxExperiment* container, const QString& md_uri) = 0;
-    /// \brief Create a new experiment metadata to the database
-    /// \param[in] container Object that contains an experiment metadata
-    /// \param[in] uri URI of the experiment in the database
-    virtual void create_experiment(SxExperiment* container, const QString& uri) = 0;
-    /// \brief Import a data to a raw dataset
-    /// \param[in] data_path local path of the data to import
-    /// \param[in] rawdataset_uri URI of the raw dataset where the data will be imported
-    /// \param[in] metadata Metadata of the data to import
-    /// \param[in] copy True if the data is copied to the Experiment database, false otherwise
-    /// \return the URI of the imported data
-    virtual QString import_data(const QString& data_path, const QString& rawdataset_uri, SxRawData* metadata, bool copy) = 0;
-    /// \brief Read a run metadata from the data base
-    /// \param[in] md_uri URI of the run entry in the database
-    /// \return Object containing the run metadata
-    virtual SxRun* read_run(const QString& md_uri) = 0;
-    /// \brief Write a run metadata to the data base
-    /// \param[in] container Object containing the run metadata
-    /// \param[in] md_uri URI of the run entry in the database
-    virtual void write_run(SxRun* container, const QString& md_uri) = 0;
-    /// \brief Query files in a repository
-    /// \param[in] repository_uri URI of the repository
-    /// \param[in] filter_ Regular expression to select a subset of file base on their names
-    /// \return The list of selected files
-    virtual QStringList query_rep(const QString& repository_uri, const QString& filter_) = 0;
-    /// \brief Create the URI of an run output data file
-    /// \param[in] output_rep_uri Output directory of the run
-    /// \param[in] output_name Output filename
-    /// \param[in] format_ Output file format
-    /// \param[in] corresponding_input_uri URI of the origin input data
-    /// \return The created URI
-    virtual QString create_output_uri(const QString& output_rep_uri, const QString& output_name, const QString& format_, const QString& corresponding_input_uri) = 0;
+    /// \brief convert a RawData to SearchContainer
+    /// \param[in] rawdata Object containing the rawdata
+    /// \return SearchContainer object
+    SxSearchContainer* _rawdata_to_search_container(SxRawData* rawdata);
 
-protected:
-    /// \brief Query a raw dataset using tags
-    /// In this verion only AND queries are supported (ex: tag1=value1 AND tag2=value2)
-    /// and performed on the RawData set
-    /// \param[in] raw_dataset Pointer to the raw dataset
-    /// \param[in] query String query with the key=value format
-    /// \return List of selected data (md.json files urls are returned)
-    QStringList query_rawdataset(SxDataset* raw_dataset, const QString& query);
-
-    QStringList query_processeddataset(SxDataset* processed_dataset, const QString& query, const QString &origin_output_name);
-
-    SxSearchContainer* raw_data_to_search_container(SxRawData* raw_data);
-    SxSearchContainer* processed_data_to_search_container(SxProcessedData* processed_data);
-    QList<SxSearchContainer*> raw_dataset_to_search_containers(SxDataset* raw_dataset);
-    QList<SxSearchContainer*> processed_dataset_to_search_containers(SxDataset* processed_dataset);
-    QStringList serach_container_list_to_uri_list(QList<SxSearchContainer*>& containers);
+    /// \brief convert a ProcessedData to SearchContainer
+    /// \param[in] processeddata Object containing the processeddata
+    /// \return SearchContainer object
+    SxSearchContainer* _processed_data_to_search_container(SxProcessedData* processeddata);
 
 };

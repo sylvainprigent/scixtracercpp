@@ -11,6 +11,10 @@
 
 #include <QFile>
 
+SxSettings* SxServices::m_settings = nullptr;
+SxRequest *SxServices::m_request = nullptr; 
+SxSerialize *SxServices::m_serialize = nullptr;
+
 SxServices::SxServices()
 {
 

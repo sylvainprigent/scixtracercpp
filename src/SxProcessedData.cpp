@@ -13,16 +13,16 @@ SxProcessedDataInput::SxProcessedDataInput() : SxContainer()
 
 }
 
-SxProcessedDataInput::SxProcessedDataInput(const QString& name, const QString& uri, const QString& type) : SxContainer()
+SxProcessedDataInput::SxProcessedDataInput(const QString& name, SxMetadata *data, const QString& type) : SxContainer()
 {
     m_name = name;
-    m_uri = uri;
+    m_data = data;
     m_type = type;
 }
 
 SxProcessedDataInput::~SxProcessedDataInput()
 {
-
+    delete m_data;
 }
 
 QString SxProcessedDataInput::get_name()
@@ -30,9 +30,9 @@ QString SxProcessedDataInput::get_name()
     return m_name;
 }
 
-QString SxProcessedDataInput::get_uri()
+SxMetadata* SxProcessedDataInput::get_data()
 {
-    return m_uri;
+    return m_data;
 }
 
 QString SxProcessedDataInput::get_type()
@@ -44,9 +44,10 @@ void SxProcessedDataInput::set_name(const QString& name)
 {
     m_name = name;
 }
-void SxProcessedDataInput::set_uri(const QString& uri)
+
+void SxProcessedDataInput::set_data(SxMetadata* data)
 {
-    m_uri = uri;
+    m_data = data;
 }
 
 void SxProcessedDataInput::set_type(const QString& type)
@@ -100,12 +101,12 @@ SxProcessedData::SxProcessedData() : SxData()
 
 SxProcessedData::~SxProcessedData()
 {
-
+    delete m_run;
 }
 
-QString SxProcessedData::get_run_uri()
+SxMetadata* SxProcessedData::get_run()
 {
-    return m_run_uri;
+    return m_run;
 }
 SxProcessedDataOutput* SxProcessedData::get_run_output()
 {
@@ -129,9 +130,9 @@ SxProcessedDataInput* SxProcessedData::get_run_input(qint8 index)
     throw SxException( QString("Cannot find processed data input at index" + QString::number(index)).toStdString().c_str());
 }
 
-void SxProcessedData::set_run_uri(const QString& uri)
+void SxProcessedData::set_run(SxMetadata* run)
 {
-    m_run_uri = uri;
+    m_run = run;
 }
 
 void SxProcessedData::set_run_input(const QString& name, SxProcessedDataInput *input)
@@ -143,4 +144,3 @@ void SxProcessedData::set_run_output(SxProcessedDataOutput* output)
 {
     m_output = output;
 }
-

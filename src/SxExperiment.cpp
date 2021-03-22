@@ -7,6 +7,53 @@
 #include "SxExperiment.h"
 #include "SxException.h"
 
+SxDatasetMetadata::SxDatasetMetadata()
+{
+
+}
+
+SxDatasetMetadata::SxDatasetMetadata(const QString& name, const QString& md_uri, const QString& uuid)
+{
+    m_name = name;
+    m_md_uri = md_uri;
+    m_uuid = uuid;
+}
+
+SxDatasetMetadata::~SxDatasetMetadata()
+{
+
+}
+
+QString SxDatasetMetadata::get_name()
+{
+    return m_name;
+}
+
+QString SxDatasetMetadata::get_md_uri()
+{
+   return m_md_uri;
+}
+
+QString SxDatasetMetadata::get_uuid()
+{
+    return m_uuid;
+}
+
+void SxDatasetMetadata::set_name(const QString& value)
+{
+    m_name = value;
+}
+
+void SxDatasetMetadata::set_md_uri(const QString& value)
+{
+    m_md_uri = value;
+}
+
+void SxDatasetMetadata::set_uuid(const QString& value)
+{
+    m_uuid = value;
+}
+
 SxExperiment::SxExperiment() : SxMetadata()
 {
 
@@ -14,7 +61,11 @@ SxExperiment::SxExperiment() : SxMetadata()
 
 SxExperiment::~SxExperiment()
 {
-
+    delete m_raw_dataset;
+    for(qint32 i = 0 ; i < m_processed_datasets.count() ; ++i)
+    {
+        delete m_processed_datasets[i];
+    }
 }
 
 QString SxExperiment::get_name()
@@ -32,24 +83,24 @@ SxDate* SxExperiment::get_date()
     return m_date;
 }
 
-QString SxExperiment::get_raw_dataset()
+SxDatasetMetadata *SxExperiment::get_raw_dataset()
 {
-    return m_raw_dataset_uri;
+    return m_raw_dataset;
 }
 
-QStringList SxExperiment::get_processed_datasets()
+QList<SxDatasetMetadata *> SxExperiment::get_processed_datasets()
 {
-    return m_processed_datasets_uris;
+    return m_processed_datasets;
 }
 
 qint8 SxExperiment::get_processed_datasets_count()
 {
-    return m_processed_datasets_uris.count();
+    return m_processed_datasets.count();
 }
 
-QString SxExperiment::get_processed_dataset(qint8 index)
+SxDatasetMetadata *SxExperiment::get_processed_dataset(qint8 index)
 {
-    return m_processed_datasets_uris[index];
+    return m_processed_datasets[index];
 }
 
 QStringList SxExperiment::get_tags_keys()
@@ -82,24 +133,24 @@ void SxExperiment::set_date(SxDate *date)
     m_date = date;
 }
 
-void SxExperiment::set_raw_dataset(const QString& uri)
+void SxExperiment::set_raw_dataset(SxDatasetMetadata *metadata)
 {
-    m_raw_dataset_uri = uri;
+    m_raw_dataset = metadata;
 }
 
-void SxExperiment::set_processed_dataset(const QString& uri)
+void SxExperiment::set_processed_dataset(SxDatasetMetadata* metadata)
 {
     bool found = false;
-    for (qint8 i = 0 ; i < m_processed_datasets_uris.count() ; i++)
+    for (qint8 i = 0 ; i < m_processed_datasets.count() ; i++)
     {
-        if (m_processed_datasets_uris[i] == uri)
+        if (m_processed_datasets[i]->get_md_uri() == metadata->get_md_uri())
         {
             found = true;
         }
     }
     if (!found)
     {
-        m_processed_datasets_uris.append(uri);
+        m_processed_datasets.append(metadata);
     }
 }
 

@@ -12,6 +12,33 @@
 #include "SxUser.h"
 #include "SxDate.h"
 
+
+/// \class SxDatasetMetadata
+/// \brief Store the basic information of a dataset for an experiment metadata
+class SCIXTRACER_EXPORT SxDatasetMetadata{
+
+public:
+    SxDatasetMetadata();
+    SxDatasetMetadata(const QString& name, const QString& md_uri, const QString& uuid);
+    ~SxDatasetMetadata();
+
+public:
+    QString get_name();
+    QString get_md_uri();
+    QString get_uuid();
+
+    void set_name(const QString& value);
+    void set_md_uri(const QString& value);
+    void set_uuid(const QString& value);
+
+protected:
+    QString m_name;
+    QString m_md_uri;
+    QString m_uuid;
+
+};
+
+
 /// \class SxExperiment
 /// \brief Metadata container for an Experiment
 class SCIXTRACER_EXPORT SxExperiment: public SxMetadata{
@@ -35,17 +62,17 @@ public:
     SxDate* get_date();
     /// \brief Get the URI of the raw dataset
     /// \return URI of the raw dataset
-    QString get_raw_dataset();
+    SxDatasetMetadata* get_raw_dataset();
     /// \brief Get the URI list of the processed dataset
     /// \return URI list of the processed dataset
-    QStringList get_processed_datasets();
+    QList<SxDatasetMetadata *> get_processed_datasets();
     /// \brief Get the number of processed dataset
     /// \return Number of processed dataset
     qint8 get_processed_datasets_count();
     /// \brief Get the URI of the processed dataset at index
     /// \param[in] index Index of the processed dataset
-    /// \return URI of the processed dataset at index
-    QString get_processed_dataset(qint8 index);
+    /// \return pointer to the processed dataset metadata at index
+    SxDatasetMetadata *get_processed_dataset(qint8 index);
     /// \brief Get the list of tags keys used in the Experiment
     /// \return List of tags keys used in the Experiment
     QStringList get_tags_keys();
@@ -70,10 +97,10 @@ public:
     void set_date(SxDate* date);
     /// \brief Set the URI of the raw dataset
     /// \param[in] uri URI of the raw dataset
-    void set_raw_dataset(const QString& uri);
-    /// \brief Set the URI of a processed dataset
-    /// \param[in] uri URI of the processed dataset
-    void set_processed_dataset(const QString& uri);
+    void set_raw_dataset(SxDatasetMetadata* metadata);
+    /// \brief Set the metadata of a processed dataset
+    /// \param[in] Pointer to the processed dataset metadata
+    void set_processed_dataset(SxDatasetMetadata *metadata);
     /// \brief Set a tag key
     /// \param[in] key Tag key
     void set_tag_key(const QString& key);
@@ -82,7 +109,7 @@ private:
     QString m_name;
     SxUser* m_author;
     SxDate* m_date;
-    QString m_raw_dataset_uri;
-    QStringList m_processed_datasets_uris;
+    SxDatasetMetadata* m_raw_dataset;
+    QList<SxDatasetMetadata*> m_processed_datasets;
     QStringList m_tags_keys;
 };

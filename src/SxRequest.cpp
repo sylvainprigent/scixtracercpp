@@ -21,70 +21,25 @@ SxRequest::~SxRequest()
 
 }
 
-SxData* SxRequest::get_parent(const QString& data_md_uri)
-{
-    SxProcessedData* processed_data = this->read_processeddata(data_md_uri);
-    if (processed_data->get_run_inputs_count() > 0)
-    {
-        if (processed_data->get_run_input(0)->get_type() == "raw"){
-            return this->read_rawdata(processed_data->get_run_input(0)->get_uri());
-        }
-        else
-        {
-            return this->read_processeddata(processed_data->get_run_input(0)->get_uri());
-        }
-    }
-    return nullptr;
-}
-
-SxRawData* SxRequest::get_origin(const QString& data_md_uri)
-{
-    SxProcessedData* processed_data = this->read_processeddata(data_md_uri);
-    if (processed_data->get_run_inputs_count() > 0)
-    {
-        if (processed_data->get_run_input(0)->get_type() == "raw"){
-            return this->read_rawdata(processed_data->get_run_input(0)->get_uri());
-        }
-        else
-        {
-            return this->get_origin(processed_data->get_run_input(0)->get_uri());
-        }
-    }
-    return nullptr;
-}
-
-SxRawData* SxRequest::import_data_experiment(SxExperiment* experiment, const QString& data_path, const QString& name,
-                                             SxUser* author, SxFormat* format, SxDate *date,
-                                             SxTags* tags, bool copy)
-{
-    SxRawData* metadata = new SxRawData();
-    metadata->set_name(name);
-    metadata->set_author(author);
-    metadata->set_format(format);
-    metadata->set_date(date);
-    metadata->set_tags(tags);
-    this->import_data(data_path, experiment->get_raw_dataset(), metadata, copy);
-    return metadata;
-}
-
-void SxRequest::import_dir_experiment(SxExperiment* experiment, const QString& dir_uri, const QString& filter_,
-                                      SxUser* author, SxFormat* format, SxDate *date, bool copy)
+void SxRequest::import_dir(SxExperiment* experiment, const QString& dir_uri, const QString& filter,
+                           const QString& author, SxFormat* format, SxDate* date, bool copy_data)
 {
     QDir directory(dir_uri);
     QStringList data_files = directory.entryList(QDir::Files);
     data_files.sort();
-    qint16 count = 0;
-    for (qint16 i = 0 ; i < data_files.count() ; ++i){
+
+    qint32 count = 0;
+    for (qint32 i = 0 ; i < data_files.count() ; ++i){
         QString filename = data_files[i];
-        count ++;
-        QRegularExpression re(filter_);
+        count += 1;
+        QRegularExpression re(filter);
         QRegularExpressionMatch match = re.match(filename);
         if (match.hasMatch()){
-            // this->notify(int(100 * count / data_files.count()), filename);
+            //this->notify_observers(int(100 * count / data_files.count()), filename)
             QString data_url = dir_uri + QDir::separator() + filename;
-            this->import_data_experiment(experiment, data_url, filename,
-                                         author, format, date,
-                                         new SxTags(), copy);
+            this->import_data(experiment, data_url, filename,
+                              author, format, date,
+                              new SxTags(), copy_data);
         }
     }
 }
@@ -92,166 +47,192 @@ void SxRequest::import_dir_experiment(SxExperiment* experiment, const QString& d
 void SxRequest::tag_from_name(SxExperiment* experiment, const QString& tag, const QStringList& values)
 {
     experiment->set_tag_key(tag);
-    SxDataset* rawdataset = this->read_rawdataset(experiment->get_raw_dataset());
-    for (qint16 i = 0 ; i < rawdataset->get_data_count() ; ++i){
-        SxRawData* rawdata = this->read_rawdata(rawdataset->get_data_uri(i));
-        for (qint16 j = 0 ; j < values.count() ; ++j){
-            if ( rawdata->get_name().contains(values[j])){
-                rawdata->get_tags()->set_tag(tag, values[j]);
+    this->update_experiment(experiment);
+    SxDataset* _rawdataset = this->get_rawdataset(experiment);
+    for (qint32 i = 0 ; i < _rawdataset->get_data_count() ; ++i){
+        SxRawData* _rawdata = this->get_rawdata(_rawdataset->get_data(i)->get_md_uri());
+        for (qint32 j = 0 ; j < values.count() ; j++){
+            QString value = values[j];
+            if (_rawdata->get_name().contains(value)){
+                _rawdata->get_tags()->set_tag(tag, value);
+                this->update_rawdata(_rawdata);
+                break;
             }
         }
-        this->write_rawdata(rawdata, rawdata->get_md_uri());
     }
 }
 
-void SxRequest::tag_using_seperator(SxExperiment* experiment, const QString& tag, const QString& separator, const qint16& value_position)
+void SxRequest::tag_using_separator(SxExperiment* experiment, const QString& tag, const QString& separator, const qint16& value_position)
 {
     experiment->set_tag_key(tag);
-    SxDataset* rawdataset = this->read_rawdataset(experiment->get_raw_dataset());
-    for (qint16 i = 0 ; i < rawdataset->get_data_count() ; ++i){
-        SxRawData* rawdata = this->read_rawdata(rawdataset->get_data_uri(i));
-        QFileInfo qt_file(rawdata->get_uri());
+    this->update_experiment(experiment);
+    SxDataset* _rawdataset = this->get_rawdataset(experiment);
+    for (qint32 i = 0 ; i < _rawdataset->get_data_count() ; i++)
+    {
+        SxRawData* _rawdata = this->get_rawdata(_rawdataset->get_data(i)->get_md_uri());
+        QFileInfo qt_file(_rawdata->get_uri());
         QStringList splited_name = qt_file.baseName().split(separator);
         QString value = "";
         if (splited_name.count() > value_position){
             value = splited_name[value_position];
         }
-        rawdata->get_tags()->set_tag(tag, value);
-        this->write_rawdata(rawdata, rawdata->get_md_uri());
+        _rawdata->get_tags()->set_tag(tag, value);
+        this->update_rawdata(_rawdata);
     }
 }
 
-QStringList SxRequest::get_data(SxExperiment* experiment, const QString& dataset_name, const QString& query, const QString& origin_output_name)
+SxData* SxRequest::get_parent(SxProcessedData* processed_data)
 {
-    SxDataset* raw_dataset = this->read_rawdataset(experiment->get_raw_dataset());
-    if (raw_dataset->get_name() == dataset_name)
+    if (processed_data->get_run_inputs_count() > 0)
     {
-        return this->query_rawdataset(raw_dataset, query);
-    }
-    else{
-        for (qint16 i = 0 ; i < experiment->get_processed_datasets_count() ; ++i){
-            SxDataset* processeddataset = this->read_processeddataset(experiment->get_processed_dataset(i));
-            if (processeddataset->get_name() == dataset_name){
-                return this->query_processeddataset(processeddataset, query, origin_output_name);
-            }
-        }
-    }
-    throw SxException(QString("Query dataset: " + dataset_name + " not found").toStdString().c_str());
-}
-
-
-// private
-SxSearchContainer* SxRequest::raw_data_to_search_container(SxRawData* raw_data)
-{
-    SxSearchContainer* info = new SxSearchContainer();
-    info->set_name(raw_data->get_name());
-    info->set_uri(raw_data->get_md_uri());
-    info->set_tags(raw_data->get_tags());
-    return info;
-}
-
-SxSearchContainer* SxRequest::processed_data_to_search_container(SxProcessedData* processed_data)
-{
-    SxSearchContainer* info = new SxSearchContainer();
-    info->set_name(processed_data->get_name());
-    info->set_uri(processed_data->get_md_uri());
-
-    SxRawData* origin = this->get_origin(processed_data->get_md_uri());
-    if (origin){
-        info->set_tags(origin->get_tags());
-    }
-    return info;
-}
-
-QList<SxSearchContainer*> SxRequest::raw_dataset_to_search_containers(SxDataset* raw_dataset)
-{
-    QList<SxSearchContainer*> search_list;
-    for (qint16 i = 0 ; i < raw_dataset->get_data_count() ; ++i)
-    {
-        SxRawData* data = this->read_rawdata(raw_dataset->get_data_uri(i));
-        search_list.append(this->raw_data_to_search_container(data));
-    }
-    return search_list;
-}
-
-QList<SxSearchContainer*> SxRequest::processed_dataset_to_search_containers(SxDataset* processed_dataset)
-{
-    QList<SxSearchContainer*> search_list;
-    for (qint16 i = 0 ; i < processed_dataset->get_data_count() ; ++i)
-    {
-        SxProcessedData* data = this->read_processeddata(processed_dataset->get_data_uri(i));
-        search_list.append(this->processed_data_to_search_container(data));
-    }
-    return search_list;
-}
-
-QStringList SxRequest::query_rawdataset(SxDataset* raw_dataset, const QString& query)
-{
-
-    QStringList queries = query.split(" AND ");
-
-    // initially all the raw data are selected
-    QList<SxSearchContainer*> selected_list = this->raw_dataset_to_search_containers(raw_dataset);
-
-    if (query == ""){
-        return this->serach_container_list_to_uri_list(selected_list);
-    }
-
-    // run all the AND queries on the preselected dataset
-    foreach(QString q, queries){
-        selected_list = SxSearch::query_list_single(selected_list, q);
-    }
-
-    // convert SearchContainer list to uri list
-    return this->serach_container_list_to_uri_list(selected_list);
-}
-
-QStringList SxRequest::query_processeddataset(SxDataset* processed_dataset, const QString& query, const QString& origin_output_name)
-{
-    // get all the tags per data
-    QList<SxSearchContainer*> pre_list = this->processed_dataset_to_search_containers(processed_dataset);
-
-    // remove the data where output origin is not the asked one
-    QList<SxSearchContainer*> selected_list;
-    if (origin_output_name != "")
-    {
-        for (qint16 i = 0 ; i < pre_list.count() ; ++i)
+        if (processed_data->get_run_input(0)->get_type() == "raw")
         {
-            SxProcessedData* data = this->read_processeddata(pre_list[i]->get_uri());
-            if (data->get_run_output()->get_name() == origin_output_name)
-            {
-                selected_list.append(pre_list[i]);
-            }
-
+            return this->get_rawdata(processed_data->get_run_input(0)->get_data()->get_md_uri());
         }
+        else
+        {
+            return this->get_processeddata(processed_data->get_run_input(0)->get_data()->get_md_uri());
+        }
+    }
+    return nullptr;
+}
+
+
+SxRawData *SxRequest::get_origin(SxProcessedData* processed_data)
+{
+    if (processed_data->get_run_inputs_count() > 0)
+    {
+        if (processed_data->get_run_input(0)->get_type() == "raw"){
+            return this->get_rawdata(processed_data->get_run_input(0)->get_data()->get_md_uri());
+        }
+        else
+        {
+            return this->get_origin(this->get_processeddata(processed_data->get_run_input(0)->get_data()->get_md_uri()));
+        }
+    }
+    return nullptr;
+}
+
+SxDataset* SxRequest::get_dataset(SxExperiment* experiment, const QString& name)
+{
+    if (name == "data"){
+        return this->get_dataset_from_uri(experiment->get_raw_dataset()->get_md_uri());
     }
     else
     {
-        selected_list = pre_list;
+        for (qint16 i = 0 ; i < experiment->get_processed_datasets_count() ; ++i)
+        {
+            SxDataset* pdataset = this->get_dataset_from_uri(experiment->get_processed_dataset(i)->get_md_uri());
+            if (pdataset->get_name() == name)
+            {
+                return pdataset;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QList<SxData*> SxRequest::get_data(SxDataset* dataset, const QString& query, const QString& origin_output_name)
+{
+
+    if (dataset->get_data_count() < 1)
+    {
+        QList<SxData*> li;
+        return li;
     }
 
-    if (query == ""){
-        return this->serach_container_list_to_uri_list(selected_list);
-    }
-
-    // query on tags
+    // search the dataset
     QStringList queries = query.split(" AND ");
 
+    // initially all the raw data are selected
+    QList<SxSearchContainer*> selected_list;
+    // raw dataset
+    if (dataset->get_name() == "data")
+    {
+        for (qint32 i = 0 ; i < dataset->get_data_count() ; ++i)
+        {
+            SxMetadata* data_info = dataset->get_data(i);
+            SxRawData* data_container = this->get_rawdata(data_info->get_md_uri());
+            selected_list.append(this->_rawdata_to_search_container(data_container));
+        }
+    }
+    // processed dataset
+    else{
+        QList<SxSearchContainer*> pre_list;
+        for (qint32 i = 0 ; i < dataset->get_data_count() ; ++i)
+        {
+            SxProcessedData* p_con = this->get_processeddata(dataset->get_data(i)->get_md_uri());
+            pre_list.append(this->_processed_data_to_search_container(p_con));
+        }
+        // remove the data where output origin is not the asked one
+        if (origin_output_name != "")
+        {
+            for (qint32 i = 0 ; i < pre_list.count() ; ++i)
+            {
+                SxProcessedData* data = this->get_processeddata(pre_list[i]->get_uri());
+                if (data->get_run_output()->get_name() == origin_output_name){
+                    selected_list.append(pre_list[i]);
+                }
+            }
+        }
+        else{
+            selected_list = pre_list;
+        }
+    }
     // run all the AND queries on the preselected dataset
-    foreach(QString q, queries){
-        selected_list = SxSearch::query_list_single(selected_list, q);
+    if (query != "")
+    {
+        for (qint32 i = 0 ; i < queries.count() ; ++i)
+        {
+            selected_list = SxSearch::query_list_single(selected_list, queries[i]);
+        }
     }
 
     // convert SearchContainer list to uri list
-    return this->serach_container_list_to_uri_list(selected_list);
-}
-
-QStringList SxRequest::serach_container_list_to_uri_list(QList<SxSearchContainer*>& containers)
-{
-    QStringList out;
-    for (qint16 i = 0 ; i < containers.count() ; ++i)
+    QList<SxData*> out;
+    for (qint32 i = 0 ; i < selected_list.count() ; ++i)
     {
-        out.append(containers[i]->get_uri());
+        SxSearchContainer* d = selected_list[i];
+        if (dataset->get_name() == "data")
+        {
+            out.append(this->get_rawdata(d->get_uri()));
+        }
+        else
+        {
+            out.append(this->get_processeddata(d->get_uri()));
+        }
     }
     return out;
+}
+
+
+SxSearchContainer* SxRequest::_rawdata_to_search_container(SxRawData* rawdata)
+{
+    SxSearchContainer* info = new SxSearchContainer(rawdata->get_name(),
+                                                    rawdata->get_md_uri(),
+                                                    rawdata->get_uuid(),
+                                                    rawdata->get_tags());
+    return info;
+}
+
+SxSearchContainer* SxRequest::_processed_data_to_search_container(SxProcessedData* processeddata)
+{
+
+    SxSearchContainer* container;
+    try{
+        SxRawData* origin = this->get_origin(processeddata);
+        if (origin){
+            container = this->_rawdata_to_search_container(origin);
+        }
+        else{
+            container = new SxSearchContainer();
+        }
+    }
+    catch (SxException e){
+               container = new SxSearchContainer();
+    }
+    container->set_name(processeddata->get_name());
+    container->set_uri(processeddata->get_md_uri());
+    container->set_uuid(processeddata->get_uuid());
+    return container;
 }

@@ -17,7 +17,7 @@ class SCIXTRACER_EXPORT SxRunInput: public SxContainer{
 
 public:
     SxRunInput();
-    SxRunInput(const QString& name, const QString& uri, const QString& query, const QString& origin);
+    SxRunInput(const QString& name, const QString& dataset_name, const QString& query, const QString& origin);
     ~SxRunInput();
 
 public:
@@ -25,9 +25,9 @@ public:
     /// \brief Get the name of the input
     /// \return Name of the input
     QString get_name();
-    /// \brief Get the URI of the dataset where the input data is stored
-    /// \return Get the dataset URI of input data
-    QString get_dataset();
+    /// \brief Get the name of the dataset where the input data is stored
+    /// \return Name the input dataset
+    QString get_dataset_name();
     /// \brief Get the query used to select data in the input dataset. The query is a RegExp
     /// \return Query used to select input data
     QString get_query();
@@ -41,8 +41,8 @@ public:
     /// \param[i] name Name of the input
     void set_name(const QString& name);
     /// \brief Set the dataset where the input data is stored
-    /// \param[in] uri URI of input dataset
-    void set_dataset(const QString& uri);
+    /// \param[in] name Name of the input dataset
+    void set_dataset_name(const QString& name);
     /// \brief Set the query used to select data in the input dataset. The query is a RegExp
     /// \param[in] query Query used to select input data
     void set_query(const QString& query);
@@ -52,7 +52,7 @@ public:
 
 private:
     QString m_name;
-    QString m_dataset_uri;
+    QString m_dataset_name;
     QString m_query;
     QString m_origin;
 
@@ -103,9 +103,9 @@ public:
 
 public:
     // getters
-    /// \brief Get the URI of the processed dataset where the run stored the results
+    /// \brief Get the metadata of the processed dataset where the run stored the results
     /// \return URI of the processed dataset
-    QString get_processed_dataset();
+    SxMetadata* get_processed_dataset();
     /// \brief Get the name of the process that is runned
     /// \return Name of the process
     QString get_process_name();
@@ -137,7 +137,7 @@ public:
     // setters
     /// \brief Set the URI of the processed dataset where the run stored the results
     /// \param[in] uri URI of the processed dataset
-    void set_processed_dataset(const QString& uri);
+    void set_processed_dataset(SxMetadata* dataset);
     /// \brief Set the name of the process that is runned
     /// \param[in] name Name of the process
     void set_process_name(const QString& name);
@@ -152,7 +152,7 @@ public:
     void set_parameter(SxRunParameter *parameter);
 
 private:
-    QString m_processed_dataset_uri;
+    SxMetadata* m_processed_dataset;
     QString m_process_name;
     QString m_process_uri;
     QList<SxRunInput*> m_inputs;

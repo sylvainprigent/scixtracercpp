@@ -16,7 +16,9 @@ SxDataset::SxDataset() : SxMetadata()
 
 SxDataset::~SxDataset()
 {
-
+    for (qint32 i = 0 ; i < m_data.count() ; ++i ){
+        delete m_data[i];
+    }
 }
 
 QString SxDataset::get_type()
@@ -29,23 +31,24 @@ QString SxDataset::get_name()
     return m_name;
 }
 
-qint8 SxDataset::get_data_count()
+qint32 SxDataset::get_data_count()
 {
-    return m_data_uris.count();
+    return m_data.count();
 }
 
-QString SxDataset::get_data_uri(qint8 index)
+QString SxDataset::get_data_uri(qint32 index)
 {
-    QSetIterator<QString> i(m_data_uris);
-    qint8 c = -1;
-    while (i.hasNext()){
-        c++;
-        if (c == index){
-            return i.next();
-        }
-        i.next();
-    }
-    throw SxException("SxDataset::get_data_uri: Index not found");
+    return m_data[index]->get_md_uri();
+}
+
+QString SxDataset::get_data_uuid(qint32 index)
+{
+    return m_data[index]->get_uuid();
+}
+
+SxMetadata* SxDataset::get_data(qint32 index)
+{
+    return m_data[index];
 }
 
 void SxDataset::set_type(const QString& type)
@@ -58,18 +61,25 @@ void SxDataset::set_name(const QString& name)
     m_name = name;
 }
 
-void SxDataset::set_data(const QString& uri)
+void SxDataset::set_data(SxMetadata* metadata)
 {
-    m_data_uris.insert(uri);
+    bool found = false;
+    for (qint32 i = 0 ; i < m_data.count() ; ++i){
+        if (m_data[i]->get_md_uri() == metadata->get_md_uri()){
+            found = true;
+            break;
+        }
+    }
+    if (!found){
+        m_data.append(metadata);
+    }
 }
 
 QStringList SxDataset::get_data_list()
 {
     QStringList uris;
-    QSetIterator<QString> i(m_data_uris);
-    while (i.hasNext())
-    {
-        uris.append(i.next());
+    for (qint32 i = 0 ; i < m_data.count() ; ++i){
+        uris.append(m_data[i]->get_md_uri());
     }
     return uris;
 }

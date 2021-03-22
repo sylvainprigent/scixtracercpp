@@ -24,6 +24,7 @@ SxSerializeJson::~SxSerializeJson()
 QString SxSerializeJson::serialize_rawdata(SxRawData* container)
 {
     QJsonObject metadata;
+    metadata["uuid"] = container->get_uuid();
 
     QJsonObject origin;
     origin["type"] = "raw";
@@ -52,6 +53,8 @@ QString SxSerializeJson::serialize_rawdata(SxRawData* container)
 QString SxSerializeJson::serialize_processeddata(SxProcessedData* container)
 {
     QJsonObject metadata;
+    metadata["uuid"] = container->get_uuid();
+
      // common
     QJsonObject common;
     common["name"] = container->get_name();
@@ -64,7 +67,10 @@ QString SxSerializeJson::serialize_processeddata(SxProcessedData* container)
     QJsonObject origin;
     origin["type"] = "processed";
     // run url
-    origin["runurl"] = container->get_run_uri();
+    QJsonObject runObject;
+    runObject["uuid"] = container->get_run()->get_uuid();
+    runObject["url"] = container->get_run()->get_md_uri();
+    origin["run"] = runObject;
     // origin inputs
     QJsonArray inputs_json;
     for (qint8 i = 0 ; i < container->get_run_inputs_count() ; ++i)
@@ -72,7 +78,8 @@ QString SxSerializeJson::serialize_processeddata(SxProcessedData* container)
         SxProcessedDataInput* input_data = container->get_run_input(i);
         QJsonObject input_json;
         input_json["name"] = input_data->get_name();
-        input_json["url"] = input_data->get_uri();
+        input_json["uuid"] = input_data->get_data()->get_uuid();
+        input_json["url"] = input_data->get_data()->get_uuid();
         input_json["type"] = input_data->get_type();
         inputs_json.append(input_json);
     }
@@ -91,11 +98,15 @@ QString SxSerializeJson::serialize_processeddata(SxProcessedData* container)
 QString SxSerializeJson::serialize_dataset(SxDataset* container)
 {
     QJsonObject metadata;
+    metadata["uuid"] = container->get_uuid();
     metadata["name"] = container->get_name();
     QJsonArray urls_json;
     for (qint8 i = 0 ; i < container->get_data_count() ; ++i)
     {
-        urls_json.append(container->get_data_uri(i));
+        QJsonObject obj;
+        obj["uuid"] = container->get_data(i)->get_uuid();
+        obj["url"] = container->get_data(i)->get_md_uri();
+        urls_json.append(obj);
     }
     metadata["urls"] = urls_json;
 
@@ -106,19 +117,23 @@ QString SxSerializeJson::serialize_dataset(SxDataset* container)
 QString SxSerializeJson::serialize_run(SxRun* container)
 {
     QJsonObject json_metadata;
+    json_metadata["uuid"] = container->get_uuid();
     QJsonObject json_process;
     json_process["name"] = container->get_process_name();
     json_process["url"] = container->get_process_uri();
     json_metadata["process"] = json_process;
 
-    json_metadata["processeddataset"] = container->get_processed_dataset();
+    QJsonObject json_processeddataset;
+    json_processeddataset["uuid"] = container->get_processed_dataset()->get_uuid();
+    json_processeddataset["url"] = container->get_processed_dataset()->get_md_uri();
+    json_metadata["processeddataset"] = json_processeddataset;
 
     QJsonArray json_inputs;
     for (qint8 i = 0 ; i < container->get_inputs_count() ; ++i){
         QJsonObject json_input;
         SxRunInput* input = container->get_input(i);
         json_input["name"] = input->get_name();
-        json_input["dataset"] = input->get_dataset();
+        json_input["dataset"] = input->get_dataset_name();
         json_input["query"] = input->get_query();
         json_input["origin_output_name"] = input->get_origin_output_name();
         json_inputs.append(json_input);
@@ -146,13 +161,22 @@ QString SxSerializeJson::serialize_experiment(SxExperiment* container)
     information["author"] = container->get_author()->get_username();
     information["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     metadata["information"] = metadata;
-    metadata["rawdataset"] = container->get_raw_dataset();
+
+    QJsonObject json_rawdataset;
+    json_rawdataset["name"] = container->get_raw_dataset()->get_name();
+    json_rawdataset["url"] = container->get_raw_dataset()->get_md_uri();
+    json_rawdataset["uuid"] = container->get_raw_dataset()->get_uuid();
+    metadata["rawdataset"] = json_rawdataset;
 
     QJsonArray jprocesseddatasets;
     for (qint8 i = 0 ; i < container->get_processed_datasets_count() ; ++i)
     {
-        QString dataset = container->get_processed_dataset(i);
-        jprocesseddatasets.append(dataset);
+        SxDatasetMetadata* met = container->get_processed_dataset(i);
+        QJsonObject json_met;
+        json_met["name"] = met->get_name();
+        json_met["url"] = met->get_md_uri();
+        json_met["uuid"] = met->get_uuid();
+        jprocesseddatasets.append(json_met);
     }
     metadata["processeddatasets"] = jprocesseddatasets;
     QJsonArray jtags;

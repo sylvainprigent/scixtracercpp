@@ -31,11 +31,18 @@ public:
     QString get_name();
     /// \brief Get the number of data in the dataset
     /// \return Number of data in the dataset
-    qint8 get_data_count();
+    qint32 get_data_count();
     /// \brief Get the URI of one data in the dataset
     /// \param[in] Index of the data in the dataset
     /// \return URI of the data at index
-    QString get_data_uri(qint8 index);
+    QString get_data_uri(qint32 index);
+    /// \brief Get the UUID of one data in the dataset
+    /// \param[in] Index of the data in the dataset
+    /// \return UUID of the data at index
+    QString get_data_uuid(qint32 index);
+    /// \brief Get the metadata (URI and UUID) of one data in the dataset
+    /// \return a pointer to the data metadata
+    SxMetadata *get_data(qint32 index);
     /// \brief Get the URIs list of the data the dataset
     /// \return URIs list of the data the dataset
     QStringList get_data_list();
@@ -50,11 +57,11 @@ public:
     void set_name(const QString& name);
     /// \brief Set a data in the dataset. Add if not exists
     /// \param[in] uri URI of the data
-    void set_data(const QString& uri);
+    void set_data(SxMetadata* metadata);
 
 private:
     QString m_type;
     QString m_name;
-    QSet<QString> m_data_uris;
+    QList<SxMetadata*> m_data;
 
 };
