@@ -73,7 +73,7 @@ QString SxExperiment::get_name()
     return m_name;
 }
 
-SxUser* SxExperiment::get_author()
+QString SxExperiment::get_author()
 {
     return m_author;
 }
@@ -123,7 +123,7 @@ void SxExperiment::set_name(const QString& name)
     m_name = name;
 }
 
-void SxExperiment::set_author(SxUser *user)
+void SxExperiment::set_author(const QString& user)
 {
     m_author = user;
 }
@@ -168,4 +168,9 @@ void SxExperiment::set_tag_key(const QString& key)
     {
         m_tags_keys.append(key);
     }
+}
+
+void SxExperiment::set_tag_keys(const QStringList& keys)
+{
+    m_tags_keys = keys;
 }

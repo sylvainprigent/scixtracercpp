@@ -116,13 +116,13 @@ SxRawData *SxRequest::get_origin(SxProcessedData* processed_data)
 SxDataset* SxRequest::get_dataset(SxExperiment* experiment, const QString& name)
 {
     if (name == "data"){
-        return this->get_dataset_from_uri(experiment->get_raw_dataset()->get_md_uri());
+        return this->get_dataset(experiment->get_raw_dataset()->get_md_uri());
     }
     else
     {
         for (qint16 i = 0 ; i < experiment->get_processed_datasets_count() ; ++i)
         {
-            SxDataset* pdataset = this->get_dataset_from_uri(experiment->get_processed_dataset(i)->get_md_uri());
+            SxDataset* pdataset = this->get_dataset(experiment->get_processed_dataset(i)->get_md_uri());
             if (pdataset->get_name() == name)
             {
                 return pdataset;
@@ -130,6 +130,11 @@ SxDataset* SxRequest::get_dataset(SxExperiment* experiment, const QString& name)
         }
     }
     return nullptr;
+}
+
+SxDataset* SxRequest::get_rawdataset(SxExperiment* experiment)
+{
+    return this->get_dataset(experiment->get_raw_dataset()->get_md_uri());
 }
 
 QList<SxData*> SxRequest::get_data(SxDataset* dataset, const QString& query, const QString& origin_output_name)

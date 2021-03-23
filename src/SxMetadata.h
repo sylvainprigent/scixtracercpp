@@ -18,6 +18,7 @@ class SCIXTRACER_EXPORT SxMetadata: public SxContainer{
 
 public:
     SxMetadata();
+    SxMetadata(const QString &md_uri, const QString &uuid);
     virtual ~SxMetadata();
 
 public:

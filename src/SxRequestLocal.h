@@ -74,16 +74,11 @@ public:
     /// \brief Read a dataset from the database using it URI
     /// \param[in] uri URI if the dataset
     /// \return Dataset object containing the dataset metadata
-    virtual SxDataset* get_dataset_from_uri(const QString& uri);
+    virtual SxDataset* get_dataset(const QString& uri);
 
     /// \brief Read a processed data from the database
     /// \param[in] dataset Container with the dataset metadata
     virtual void update_dataset(SxDataset* dataset);
-
-    /// \brief Read the raw dataset from the database
-    /// \param[in] experiment Container of the experiment metadata
-    /// \return Dataset object containing the dataset metadata
-    virtual SxDataset* get_rawdataset(SxExperiment* experiment);
 
     /// \brief Create a processed dataset in an experiment
     /// \param[in] experiment Object containing the experiment metadata
@@ -107,5 +102,56 @@ public:
     /// \param[in] run Metadata of the run
     /// \param[in] processed_data Object containing the new processed data. md_uri is ignored and created automatically by this method
     virtual SxProcessedData* create_data(SxDataset* dataset, SxRun* run, SxProcessedData* processed_data);
+
+private:
+    /// \brief Write a run metadata in the database
+    /// \param[in] run Metadata container
+    void _write_run(SxRun* run);
+    /// \brief Generate a new random UUID
+    /// \return String continaing the UUID
+    QString _generate_uuid();
+    /// \brief Read the metadata from the a JSON file
+    /// \param[in] filename URI of the JSON file
+    /// \return Object containing the JSON data
+    QJsonObject _read_json(const QString& filename);
+    /// \brief Write the metadata to the a json file
+    /// \param[in] metadata Metadata in a JSON object
+    /// \param[in] md_uri URI of the destination file
+    void _write_json(const QJsonObject& metadata, const QString& filename);
+    /// \brief get metadata file directory path
+    /// \param[in] md_uri URI of the metadata file
+    /// \return The metadata file directory path
+    QString md_file_path(const QString& md_uri);
+    /// \brief Convert file absolute path to a relative path wrt reference_file
+    /// \param[in] reference_file Reference file path
+    /// \param[in] file File to get absolute path
+    /// \return relative path of file wrt reference_file
+    QString relative_path(const QString& file, const QString& reference_file);
+    /// \brief Convert file relative to reference_file into an absolute path
+    /// \param[in] reference_file Reference file
+    /// \param[in] file File to get absolute path
+    /// \return absolute path of file
+    QString absolute_path(const QString& file, const QString& reference_file);
+    /// \brief Simplify a path by removing ../
+    /// \param[in] path Path to simplify
+    /// \return Simplified path
+    QString simplify_path(const QString& path);
+    /// \brief Normalize the separators of a path
+    /// \param[in] path Path to normalize
+    /// \return path normalized
+    QString normalize_path_sep(const QString& path);
+    /// \brief Transform a path to unix path
+    /// \param[in] path Path to unixify
+    /// \return Path with unix separator
+    QString to_unix_path(const QString& path);
+    /// \brief Create a path by joining two part of path
+    /// \param[in] path1 First path of the path
+    /// \param[in] path2 Second part of the path
+    /// \return the constructed path
+    QString path_join(QString path1, QString path2);
+    /// \brief get the absolut file path
+    /// \param[in] path Relative path
+    /// \return the absoute path
+    QString abspath(const QString& path);
 
 };

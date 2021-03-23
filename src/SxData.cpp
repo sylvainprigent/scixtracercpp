@@ -27,7 +27,7 @@ QString SxData::get_name()
     return m_name;
 }
 
-SxUser* SxData::get_author()
+QString SxData::get_author()
 {
     return m_author;
 }
@@ -57,7 +57,7 @@ void SxData::set_name(const QString& name)
     m_name = name;
 }
 
-void SxData::set_author(SxUser* user)
+void SxData::set_author(const QString &user)
 {
     m_author = user;
 }

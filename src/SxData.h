@@ -33,7 +33,7 @@ public:
     QString get_name();
     /// \brief Get the the data author
     /// \return Reference to the user information
-    SxUser* get_author();
+    QString get_author();
     /// \brief Get the creation date of the data
     /// \return Creation date of the data
     SxDate* get_date();
@@ -54,7 +54,7 @@ public:
     void set_name(const QString& name);
     /// \brief Set the username of the data author
     /// \param[in] username Username of the data author
-    void set_author(SxUser* user);
+    void set_author(const QString& user);
     /// \brief Set the creation date of the data
     /// \param[in] date Creation date of the data
     void set_date(SxDate* date);
@@ -68,7 +68,7 @@ public:
 private:
     QString m_type;
     QString m_name;
-    SxUser* m_author;
+    QString m_author;
     SxDate* m_date;
     SxFormat* m_format;
     QString m_uri;

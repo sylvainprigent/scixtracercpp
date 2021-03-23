@@ -11,6 +11,12 @@ SxMetadata::SxMetadata() : SxContainer()
 
 }
 
+SxMetadata::SxMetadata(const QString& md_uri, const QString& uuid) : SxContainer()
+{
+    m_md_uri = md_uri;
+    m_uuid = uuid;
+}
+
 SxMetadata::~SxMetadata()
 {
 

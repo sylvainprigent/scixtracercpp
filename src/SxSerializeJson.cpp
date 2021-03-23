@@ -32,7 +32,7 @@ QString SxSerializeJson::serialize_rawdata(SxRawData* container)
 
     QJsonObject common;
     common["name"] = container->get_name();
-    common["author"] = container->get_author()->get_username();
+    common["author"] = container->get_author();
     common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     common["format"] = container->get_format()->get_name();
     common["url"] = container->get_uri();
@@ -58,7 +58,7 @@ QString SxSerializeJson::serialize_processeddata(SxProcessedData* container)
      // common
     QJsonObject common;
     common["name"] = container->get_name();
-    common["author"] = container->get_author()->get_username();
+    common["author"] = container->get_author();
     common["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     common["format"] = container->get_format()->get_name();
     common["url"] = container->get_uri();
@@ -158,7 +158,7 @@ QString SxSerializeJson::serialize_experiment(SxExperiment* container)
     QJsonObject metadata;
     QJsonObject information;
     information["name"] = container->get_name();
-    information["author"] = container->get_author()->get_username();
+    information["author"] = container->get_author();
     information["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
     metadata["information"] = metadata;
 

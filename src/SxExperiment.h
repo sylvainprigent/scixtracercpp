@@ -56,7 +56,7 @@ public:
     QString get_name();
     /// \brief Get the author of the Experiment
     /// \return Reference to the Experiment author
-    SxUser* get_author();
+    QString get_author();
     /// \brief Get the date of the Experiment
     /// \return Date of the Experiment
     SxDate* get_date();
@@ -91,7 +91,7 @@ public:
     void set_name(const QString& name);
     /// \brief Set the author of the Experiment
     /// \param[in] user Reference to the Experiment author
-    void set_author(SxUser* user);
+    void set_author(const QString& user);
     /// \brief Set the date of the Experiment
     /// \param[in] date Date of the Experiment
     void set_date(SxDate* date);
@@ -104,10 +104,13 @@ public:
     /// \brief Set a tag key
     /// \param[in] key Tag key
     void set_tag_key(const QString& key);
+    /// \brief Set the tag keys
+    /// \param[in] keys list of tag keys
+    void set_tag_keys(const QStringList& keys);
 
 private:
     QString m_name;
-    SxUser* m_author;
+    QString m_author;
     SxDate* m_date;
     SxDatasetMetadata* m_raw_dataset;
     QList<SxDatasetMetadata*> m_processed_datasets;

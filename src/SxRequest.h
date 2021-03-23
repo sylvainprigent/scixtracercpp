@@ -79,16 +79,11 @@ public:
     /// \brief Read a dataset from the database using it URI
     /// \param[in] uri URI if the dataset
     /// \return Dataset object containing the dataset metadata
-    virtual SxDataset* get_dataset_from_uri(const QString& uri) = 0;
+    virtual SxDataset* get_dataset(const QString& uri) = 0;
 
     /// \brief Read a processed data from the database
     /// \param[in] dataset Container with the dataset metadata
     virtual void update_dataset(SxDataset* dataset) = 0;
-
-    /// \brief Read the raw dataset from the database
-    /// \param[in] experiment Container of the experiment metadata
-    /// \return Dataset object containing the dataset metadata
-    virtual SxDataset* get_rawdataset(SxExperiment* experiment) = 0;
 
     /// \brief Create a processed dataset in an experiment
     /// \param[in] experiment Object containing the experiment metadata
@@ -155,6 +150,11 @@ public:
     /// \param[in] processeddata Container of the processed data URI
     /// \return  the origin data in a RawData object
     SxRawData* get_origin(SxProcessedData* processed_data);
+
+    /// \brief Read the raw dataset from the database
+    /// \param[in] experiment Container of the experiment metadata
+    /// \return Dataset object containing the dataset metadata
+    SxDataset* get_rawdataset(SxExperiment* experiment);
 
     /// \brief Query a dataset from it name
     /// \param[in] experiment Object containing the experiment metadata
