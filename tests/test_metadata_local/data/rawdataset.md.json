@@ -1,8 +1,18 @@
 {
     "name": "data",
     "urls": [
-        "population1_001.md.json",
-        "population1_002.md.json",
-        "population1_003.md.json"
-    ]
+        {
+            "url": "population1_001.md.json",
+            "uuid": "fake_uuid"
+        },
+        {
+            "url": "population1_002.md.json",
+            "uuid": "fake_uuid"
+        },
+        {
+            "url": "population1_003.md.json",
+            "uuid": "fake_uuid"
+        }
+    ],
+    "uuid": "fake_uuid"
 }

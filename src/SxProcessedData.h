@@ -128,6 +128,10 @@ public:
     /// \brief Set the run output. Only one ouput possible which is this processed data
     /// \param[in] output Container for a run output
     void set_run_output(SxProcessedDataOutput* output);
+    /// \brief Set the common information of the data
+    void set_info(const QString& name, const QString& author, SxDate* date, SxFormat* format_, const QString& uri);
+    void add_input(const QString& name, SxMetadata *data, const QString& type);
+    void set_output(const QString &name, const QString &label);
 
 private:
     SxMetadata* m_run;

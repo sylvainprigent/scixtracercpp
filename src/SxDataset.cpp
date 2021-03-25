@@ -8,6 +8,7 @@
 #include "SxException.h"
 
 #include <QSetIterator>
+#include <QDebug>
 
 SxDataset::SxDataset() : SxMetadata()
 {

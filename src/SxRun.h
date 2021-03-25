@@ -138,6 +138,10 @@ public:
     /// \brief Set the URI of the processed dataset where the run stored the results
     /// \param[in] uri URI of the processed dataset
     void set_processed_dataset(SxMetadata* dataset);
+    /// \brief Set the information of the process that is runned
+    /// \param[in] name Name of the process
+    /// \param[in] uri URI of the process
+    void set_process(const QString& name, const QString& uri);
     /// \brief Set the name of the process that is runned
     /// \param[in] name Name of the process
     void set_process_name(const QString& name);
@@ -147,9 +151,12 @@ public:
     /// \brief Set the input
     /// \param[in] input Reference to the run input container
     void set_input(SxRunInput* input);
+    /// \brief Add a run imput
+    void add_input(const QString& name, const QString& dataset_name, const QString& query, const QString& origin = "");
     /// \brief Set the parameter
     /// \param[in] parameter Reference to the run parameter container
     void set_parameter(SxRunParameter *parameter);
+    void add_parameter(const QString &name, const QString &label);
 
 private:
     SxMetadata* m_processed_dataset;

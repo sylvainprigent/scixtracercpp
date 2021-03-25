@@ -79,7 +79,7 @@ public:
     /// \brief Read a dataset from the database using it URI
     /// \param[in] uri URI if the dataset
     /// \return Dataset object containing the dataset metadata
-    virtual SxDataset* get_dataset(const QString& uri) = 0;
+    virtual SxDataset* get_dataset_from_uri(const QString& uri) = 0;
 
     /// \brief Read a processed data from the database
     /// \param[in] dataset Container with the dataset metadata

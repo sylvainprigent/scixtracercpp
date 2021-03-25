@@ -164,6 +164,12 @@ void SxRun::set_processed_dataset(SxMetadata *dataset)
     m_processed_dataset = dataset;
 }
 
+void SxRun::set_process(const QString& name, const QString& uri)
+{
+    m_process_name = name;
+    m_process_uri = uri;
+}
+
 void SxRun::set_process_name(const QString& name)
 {
     m_process_name = name;
@@ -172,6 +178,11 @@ void SxRun::set_process_name(const QString& name)
 void SxRun::set_process_uri(const QString& uri)
 {
     m_process_uri = uri;
+}
+
+void SxRun::add_input(const QString& name, const QString& dataset_name, const QString& query, const QString& origin)
+{
+    m_inputs.append(new SxRunInput(name, dataset_name, query, origin));
 }
 
 void SxRun::set_input(SxRunInput *input)
@@ -202,4 +213,9 @@ void SxRun::set_parameter(SxRunParameter* parameter)
     {
        m_parameters.append(parameter);
     }
+}
+
+void SxRun::add_parameter(const QString& name, const QString& label)
+{
+    m_parameters.append(new SxRunParameter(name, label));
 }

@@ -11,14 +11,19 @@
             {
                 "name": "i",
                 "type": "raw",
-                "url": "../data/population1_001.md.json"
+                "url": "../data/population1_001.md.json",
+                "uuid": "fake_uuid"
             }
         ],
         "output": {
             "label": "Denoised image",
             "name": "o"
         },
-        "runurl": "run.md.json",
+        "run": {
+            "url": "run.md.json",
+            "uuid": "fake_uuid"
+        },
         "type": "processed"
-    }
+    },
+    "uuid": "fake_uuid"
 }

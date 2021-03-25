@@ -21,3 +21,4 @@
 #define ref_processeddataset2_file "@ref_processeddataset2_file@"
 #define test_images_data_file1 "@test_images_data_file1@"
 #define test_images_data_dir "@test_images_data_dir@"
+#define ref_run_file "@ref_run_file@"

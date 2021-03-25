@@ -54,6 +54,8 @@ set(ref_processeddata_img_uri ${PROJECT_SOURCE_DIR}/test_metadata_local/process1
 set(test_images_data_file1 ${PROJECT_SOURCE_DIR}/test_images/data/population1_001.tif)
 set(test_images_data_dir ${PROJECT_SOURCE_DIR}/test_images/data/)
 
+set(ref_run_file ${PROJECT_SOURCE_DIR}/test_metadata_local/process1/run.md.json)
+
 if(EXISTS ${PROJECT_SOURCE_DIR}/SxTestConfig.h.in)
   configure_file(SxTestConfig.h.in ${CMAKE_BINARY_DIR}/SxTestConfig.h)
 endif()

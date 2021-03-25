@@ -144,3 +144,22 @@ void SxProcessedData::set_run_output(SxProcessedDataOutput* output)
 {
     m_output = output;
 }
+
+void SxProcessedData::set_info(const QString& name, const QString& author, SxDate* date, SxFormat* format_, const QString& uri)
+{
+    m_name = name;
+    m_author = author;
+    m_date = date;
+    m_format = format_;
+    m_uri = uri;
+}
+
+void SxProcessedData::add_input(const QString& name, SxMetadata *data, const QString& type)
+{
+    this->set_run_input(name, new SxProcessedDataInput(name, data, type));
+}
+
+void SxProcessedData::set_output(const QString &name, const QString &label)
+{
+    this->set_run_output(new SxProcessedDataOutput(name, label));
+}

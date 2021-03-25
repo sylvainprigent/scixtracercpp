@@ -65,7 +65,7 @@ public:
     /// \param[in] uri URI of the data file
     void set_uri(const QString& uri);
 
-private:
+protected:
     QString m_type;
     QString m_name;
     QString m_author;

@@ -12,5 +12,6 @@
     "tags": {
         "Population": "population1",
         "number": "001"
-    }
+    },
+    "uuid": "fake_uuid"
 }

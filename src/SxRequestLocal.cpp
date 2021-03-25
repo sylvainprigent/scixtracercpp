@@ -191,7 +191,14 @@ SxRawData* SxRequestLocal::import_data(SxExperiment* experiment, const QString& 
 
     // import data
     if (copy){
-        QString copied_data_path = this->path_join(data_dir_path, data_base_name);
+        QString extension;
+        if (format->get_name().startsWith(".")){
+            extension = format->get_name();
+        }
+        else{
+            extension = "." + format->get_name();
+        }
+        QString copied_data_path = this->path_join(data_dir_path, data_base_name + extension);
         QFile copyfile(data_path);
         copyfile.copy(copied_data_path);
         metadata->set_uri(copied_data_path);
@@ -203,7 +210,7 @@ SxRawData* SxRequestLocal::import_data(SxExperiment* experiment, const QString& 
     this->update_rawdata(metadata);
 
     // add data to experiment RawDataSet
-    SxDataset* rawdataset_container = this->get_dataset(rawdataset_uri);
+    SxDataset* rawdataset_container = this->get_dataset_from_uri(rawdataset_uri);
     SxMetadata* raw_c = new SxMetadata(metadata->get_md_uri(), metadata->get_uuid());
     rawdataset_container->set_data(raw_c);
     this->update_dataset(rawdataset_container);
@@ -230,9 +237,9 @@ SxRawData* SxRequestLocal::get_rawdata(const QString&  uri)
         container->set_md_uri(md_uri);
         QJsonObject json_origin =  metadata["origin"].toObject();
         container->set_type(json_origin["type"].toString());
-        container->set_name(json_origin["name"].toString());
-        QJsonObject json_common = metadata["common"].toObject();
 
+        QJsonObject json_common = metadata["common"].toObject();
+        container->set_name(json_common["name"].toString());
         container->set_author(json_common["author"].toString());
         container->set_date(new SxDate(json_common["date"].toString()));
         container->set_format(new SxFormat(json_common["format"].toString()));
@@ -383,7 +390,7 @@ void SxRequestLocal::update_processeddata(SxProcessedData* processeddata)
     this->_write_json(metadata, md_uri);
 }
 
-SxDataset* SxRequestLocal::get_dataset(const QString& uri)
+SxDataset* SxRequestLocal::get_dataset_from_uri(const QString& uri)
 {
     QString md_uri = this->abspath(uri);
     if (QFile::exists(md_uri) && md_uri.endsWith(".md.json"))
@@ -418,6 +425,7 @@ void SxRequestLocal::update_dataset(SxDataset* dataset)
         QJsonObject json_data;
         json_data["url"] = this->to_unix_path(this->relative_path(data->get_md_uri(), md_uri));
         json_data["uuid"] = data->get_uuid();
+        json_urls.append(json_data);
     }
     metadata["urls"] = json_urls;
     this->_write_json(metadata, md_uri);
@@ -474,6 +482,7 @@ SxRun* SxRequestLocal::create_run(SxDataset* dataset, SxRun* run_info)
 SxRun* SxRequestLocal::get_run(const QString& uri)
 {
     QString md_uri = this->abspath(uri);
+    qDebug() << "read run from "<< md_uri;
     if (QFile::exists(md_uri))
     {
         QJsonObject metadata = this->_read_json(md_uri);
@@ -586,7 +595,8 @@ void SxRequestLocal::_write_run(SxRun* run)
 
 QString SxRequestLocal::_generate_uuid()
 {
-    return QUuid::createUuid().toString();
+    QString uuid = QUuid::createUuid().toString();
+    return uuid.replace("{", "").replace("}", "");
 }
 
 QJsonObject SxRequestLocal::_read_json(const QString& filename)

@@ -8,6 +8,7 @@
 #include "SxException.h"
 
 #include <QStringList>
+#include <QDate>
 #include <QDebug>
 
 SxDate::SxDate() : SxContainer()
@@ -70,6 +71,15 @@ void SxDate::set_day(qint8 value)
 
 void SxDate::set_from_string(QString value)
 {
+    if (value == "now")
+    {
+        QDate date = QDate::currentDate();
+        m_day = date.day();
+        m_month = date.month();
+        m_year = date.year();
+        return;
+    }
+
     QString v1 = value;
     QStringList date_fr = v1.split("/");
     if (date_fr.count() == 3){

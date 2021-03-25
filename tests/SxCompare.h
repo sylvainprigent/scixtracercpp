@@ -12,6 +12,6 @@
 class SxCompare{
 
 public:
-    static bool compare_txt_files(const QString& file1, const QString& file2);
-    static bool compare_metadata(SxMetadata* container1, SxMetadata* container2);
+    static qint8 compare_txt_files(const QString& file1, const QString& file2);
+    static qint8 compare_metadata(SxMetadata* container1, SxMetadata* container2);
 };

@@ -7,7 +7,7 @@
 #include "SxCompare.h"
 #include "../src/SxSerializeJson.h"
 
-bool SxCompare::compare_txt_files(const QString& file1, const QString& file2)
+qint8 SxCompare::compare_txt_files(const QString& file1, const QString& file2)
 {
     QFile qfile1(file1);
     if (!qfile1.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -21,12 +21,12 @@ bool SxCompare::compare_txt_files(const QString& file1, const QString& file2)
     QString content2 = QString::fromStdString(qfile2.readAll().toStdString());
 
     if (content1 == content2){
-        return false;
+        return 0;
     }
-    return true;
+    return 1;
 }
 
-bool SxCompare::compare_metadata(SxMetadata* container1, SxMetadata* container2)
+qint8 SxCompare::compare_metadata(SxMetadata* container1, SxMetadata* container2)
 {
     SxSerializeJson serializer;
     QString c1 = serializer.serialize(container1);
@@ -36,7 +36,7 @@ bool SxCompare::compare_metadata(SxMetadata* container1, SxMetadata* container2)
     qDebug() << "c2:" << c2;
 
     if (c1 == c2){
-        return false;
+        return 0;
     }
-    return true;
+    return 1;
 }

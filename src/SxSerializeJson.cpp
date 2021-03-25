@@ -160,7 +160,7 @@ QString SxSerializeJson::serialize_experiment(SxExperiment* container)
     information["name"] = container->get_name();
     information["author"] = container->get_author();
     information["date"] = container->get_date()->get_to_string("YYYY-MM-DD");
-    metadata["information"] = metadata;
+    metadata["information"] = information;
 
     QJsonObject json_rawdataset;
     json_rawdataset["name"] = container->get_raw_dataset()->get_name();
